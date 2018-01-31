@@ -1,3 +1,4 @@
-CREATE ROLE customer WITH LOGIN PASSWORD 'password'; ALTER ROLE customer CREATEDB;
-CREATE DATABASE SocialCredit;
-GRANT ALL PRIVILEGES ON DATABASE SocialCredit TO customer;
+CREATE ROLE customer WITH LOGIN PASSWORD 'password';
+ALTER ROLE customer CREATEDB;
+CREATE DATABASE awesomesocialcredit;
+GRANT ALL PRIVILEGES ON DATABASE awesomesocialcredit TO customer;
