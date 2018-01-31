@@ -1,0 +1,34 @@
+{
+  "name": "social-credit",
+  "version": "0.0.0",
+  "description": "A social media based lending app",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest",
+    "coverage": "jest --coverage"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TechUniv2018/social-credit.git"
+  },
+  "contributors": [
+    "Kshipra Shetty <kshiprashetty@gmail.com>",
+    "Shubham Mathur <shubham.mathur@engineer.com>",
+    "Souradeep Nanda <souradeep.nanda123@gmail.com>",
+    "Saurav Sahu <sauravsahu.12@live.com>",
+    "Nidhi Jagadeesha <nidhijune14@gmail.com>"
+  ],
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TechUniv2018/social-credit/issues"
+  },
+  "homepage": "https://github.com/TechUniv2018/social-credit#readme",
+  "devDependencies": {
+    "eslint": "^4.16.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-jsx-a11y": "^6.0.3",
+    "eslint-plugin-react": "^7.6.1",
+    "jest": "^22.1.4"
+  }
+}
