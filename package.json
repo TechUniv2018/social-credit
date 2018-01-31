@@ -30,5 +30,9 @@
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.1",
     "jest": "^22.1.4"
+  },
+  "dependencies": {
+    "hapi": "^16.6.2",
+    "inert": "^4.2.1"
   }
 }
