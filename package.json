@@ -11,12 +11,18 @@
     "type": "git",
     "url": "git+https://github.com/TechUniv2018/social-credit.git"
   },
-  "author": "group3",
+  "contributors": [
+    "Kshirpa Shetty <kshiprashetty@gmail.com>",
+    "Shubham Mathur <shubham.mathur@engineer.com>",
+    "Souradeep Nanda <souradeep.nanda123@gmail.com>",
+    "Saurav Sahu <sauravsahu.12@live.com>",
+    "Nidhi Jagadeesha <nidhijune14@gmail.com>"
+  ],
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/social-lending-mvp-organization/social-credit/issues"
+    "url": "https://github.com/TechUniv2018/social-credit/issues"
   },
-  "homepage": "https://github.com/social-lending-mvp-organization/social-credit#readme",
+  "homepage": "https://github.com/TechUniv2018/social-credit#readme",
   "devDependencies": {
     "eslint": "^4.16.0",
     "eslint-config-airbnb": "^16.1.0",
