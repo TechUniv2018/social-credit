@@ -7,7 +7,7 @@
     "start": "node src/server.js",
     "test": "jest",
     "coverage": "jest --coverage",
-    "initDB": "sh scripts/sh/database.sh"
+    "initdb": "sh scripts/sh/database.sh"
   },
   "repository": {
     "type": "git",
