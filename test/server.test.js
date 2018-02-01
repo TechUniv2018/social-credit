@@ -11,9 +11,9 @@ describe('Server should have the route', () => {
       })
       .catch(console.log);
   });
-  it('/dashboard.html', (done) => {
+  it('/index.html', (done) => {
     supertest(server.listener)
-      .get('/dashboard.html')
+      .get('/index.html')
       .then((response) => {
         expect(response.statusCode).toBe(200);
         done();
