@@ -2,8 +2,9 @@
   "name": "social-credit",
   "version": "0.0.0",
   "description": "A social media based lending app",
-  "main": "index.js",
+  "main": "src/server.js",
   "scripts": {
+    "start": "node src/server.js",
     "test": "jest",
     "coverage": "jest --coverage"
   },
@@ -29,6 +30,11 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.1",
-    "jest": "^22.1.4"
+    "jest": "^22.1.4",
+    "supertest": "^3.0.0"
+  },
+  "dependencies": {
+    "hapi": "^16.6.2",
+    "inert": "^4.2.1"
   }
 }
