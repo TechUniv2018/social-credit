@@ -1,2 +1,2 @@
 #!/bin/sh
-psql -U customer --dbname=awesomesocialcredit < init-database.sql
+psql postgres  < init-database.sql
