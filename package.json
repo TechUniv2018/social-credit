@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node src/server.js",
     "test": "jest",
-    "coverage": "jest --coverage"
+    "coverage": "jest --coverage",
+    "initdb": "sh scripts/sh/database.sh"
   },
   "repository": {
     "type": "git",
