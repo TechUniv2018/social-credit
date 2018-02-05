@@ -9,7 +9,8 @@
     "coverage": "jest --coverage",
     "initdb": "sh scripts/sh/database.sh",
     "migrations": "sequelize db:migrate",
-    "seed":"sequelize db:seed:all"
+    "seed":"sequelize db:seed:all",
+    "testmigration":"NODE_ENV=test sequelize db:migrate:undo:all && NODE_ENV=test sequelize db:migrate"
   },
   "repository": {
     "type": "git",
