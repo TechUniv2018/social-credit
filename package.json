@@ -8,7 +8,8 @@
     "test": "jest",
     "coverage": "jest --coverage",
     "initdb": "sh scripts/sh/database.sh",
-    "migrations": "sequelize db:migrate"
+    "migrations": "sequelize db:migrate",
+    "seed":"sequelize db:seed:all"
   },
   "repository": {
     "type": "git",
