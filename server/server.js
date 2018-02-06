@@ -12,19 +12,18 @@ server.connection({
 });
 
 /**
- * Host the public folder statically
+ * Host the build folder statically
  */
 server.register(inert, (err) => {
   if (err) {
     throw err;
   }
-
   server.route({
     method: 'GET',
-    path: '/{file*}',
+    path: '/{p*}',
     handler: {
       directory: {
-        path: 'public/',
+        path: './build/',
       },
     },
   });

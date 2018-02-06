@@ -1,15 +1,14 @@
-const server = require('../src/server');
+const server = require('../server/server');
 const supertest = require('supertest');
 
 describe('Server should have the route', () => {
-  it('/login.html', (done) => {
+  it('/admin', (done) => {
     supertest(server.listener)
-      .get('/login.html')
+      .get('/admin')
       .then((response) => {
         expect(response.statusCode).toBe(200);
         done();
-      })
-      .catch(console.log);
+      });
   });
   it('/index.html', (done) => {
     supertest(server.listener)
@@ -17,17 +16,7 @@ describe('Server should have the route', () => {
       .then((response) => {
         expect(response.statusCode).toBe(200);
         done();
-      })
-      .catch(console.log);
-  });
-  it('/admin', (done) => {
-    supertest(server.listener)
-      .get('/admin')
-      .then((response) => {
-        expect(response.statusCode).toBe(200);
-        done();
-      })
-      .catch(console.log);
+      });
   });
 });
 
