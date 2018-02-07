@@ -5,11 +5,14 @@ module.exports = [{
   method: 'GET',
   handler: (request, response) => {
     model.banks.findOne().then((bankDetails) => {
-      if (bankDetails === null) {
-        response('Could not find bank amount');
-        throw new Error('Not found');
-      }
       response(bankDetails);
+    }).catch(() => {
+      response({
+        data: {
+          reason: 'Unable to retrieve users.',
+        },
+        statusCode: 500,
+      });
     });
   },
 },

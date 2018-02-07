@@ -3,11 +3,12 @@
  */
 const hapi = require('hapi');
 const inert = require('inert');
+const routes = require('./routes');
 
 // Create a new Hapi server
 const server = new hapi.Server();
 server.connection({
-  port: Number(process.env.PORT || 8080),
+  port: Number(process.env.PORT || 8085),
   host: 'localhost',
 });
 
@@ -42,6 +43,8 @@ server.route({
       .header('Content-Type', 'application/json');
   },
 });
+
+server.route(routes);
 
 /**
  * Start the server

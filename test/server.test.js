@@ -37,4 +37,15 @@ describe('Server should have the route', () => {
         done();
       });
   });
+  describe('With contents in', () => {
+    it('/api/maxAmount', (done) => {
+      supertest(server.listener)
+        .get('/api/maxAmount')
+        .then((response) => {
+          const resultKeys = ['amount', 'currency', 'createdAt', 'updatedAt', 'id'];
+          expect(Object.keys(response.body).sort()).toEqual(resultKeys.sort());
+          done();
+        });
+    });
+  });
 });
