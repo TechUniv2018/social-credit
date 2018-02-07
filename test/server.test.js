@@ -29,5 +29,12 @@ describe('Server should have the route', () => {
       })
       .catch(console.log);
   });
+  it('/api/maxAmount', (done) => {
+    supertest(server.listener)
+      .get('/api/maxAmount')
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+        done();
+      });
+  });
 });
-
