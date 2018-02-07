@@ -1,0 +1,19 @@
+.login-wrapper {
+  background: #dffff7;
+  height: 90vh;
+  float: right;
+  width: 25%;
+  display: flex;
+  justify-content:center;
+  align-content:center;
+  flex-direction:column;
+}
+
+.login-wrapper-fb {
+  background: #4882ff;
+  justify-content:center;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 10%;
+}

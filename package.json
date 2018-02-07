@@ -4,8 +4,12 @@
   "description": "A social media based lending app",
   "main": "src/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "test": "jest",
+    "reactStart": "react-scripts start",
+    "start": "node ./server/server.js",
+    "build": "react-scripts build",
+    "reactTest": "CI=true react-scripts test --env=jsdom",
+    "test": "jest ./test/*",
+    "eject": "react-scripts eject",
     "coverage": "jest --coverage",
     "initdb": "sh scripts/sh/database.sh",
     "migrations": "sequelize db:migrate"
@@ -25,14 +29,15 @@
   "bugs": {
     "url": "https://github.com/TechUniv2018/social-credit/issues"
   },
-  "homepage": "https://github.com/TechUniv2018/social-credit#readme",
   "devDependencies": {
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
     "eslint": "^4.16.0",
     "eslint-config-airbnb": "^16.1.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jsx-a11y": "^6.0.3",
     "eslint-plugin-react": "^7.6.1",
-    "jest": "^22.1.4",
+    "jest": "18.1.0",
     "sequelize-cli": "^3.2.0",
     "supertest": "^3.0.0"
   },
@@ -40,6 +45,10 @@
     "hapi": "^16.6.2",
     "inert": "^4.2.1",
     "pg": "^7.4.1",
+    "prop-types": "^15.6.0",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "react-scripts": "1.1.0",
     "sequelize": "^4.32.2"
   }
 }
