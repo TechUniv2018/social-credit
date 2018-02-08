@@ -2,7 +2,7 @@
 
 This is a practice project for mdl-jan interns 2018. External contributors would be barred.
 
-##Rules
+## Rules
 
 1. Create a new branch with issue number e.g. `origin/issue1`
 2. Use `git pull origin develop --rebase`, on your branch, to iteratively fix merge conflicts.
