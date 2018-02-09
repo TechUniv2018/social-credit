@@ -62,3 +62,17 @@ describe('POST request: Server should have the route', () => {
       });
   });
 });
+
+describe('POST: Check for response', () => {
+  it('api/maxAmount', (done) => {
+    const bank = { amount: 6000000, currency: 'INR' };
+    supertest(server.listener)
+      .post('/api/maxAmount')
+      .send(bank)
+      .end((err, response) => {
+        if (err) return done(err);
+        expect((response.request.res.text)).toEqual(`Amount set: ${bank.amount}\nCurrency set: ${bank.currency}`);
+        done();
+      });
+  });
+});

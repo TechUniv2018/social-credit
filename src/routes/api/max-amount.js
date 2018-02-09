@@ -27,7 +27,6 @@ module.exports = [{
         amount: request.payload.amount,
         currency: request.payload.currency,
       });
-      // const response = reply(`${bankDetails.amount}`);
       const response = reply(`Amount set: ${amountFromAdmin}\nCurrency set: ${currencyFromAdmin}`);
       response.header('Content-Type', 'text/plain');
     }).catch(() => {
