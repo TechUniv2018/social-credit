@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "npm run testmigration",
+    "test": "npm run testmigration && jest",
     "coverage": "jest --coverage",
     "initdb": "sh scripts/sh/database.sh",
     "migrations": "sequelize db:migrate",
