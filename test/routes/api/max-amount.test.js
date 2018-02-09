@@ -48,3 +48,17 @@ describe('GET request: Server should have the route', () => {
     });
   });
 });
+
+
+describe('POST request: Server should have the route', () => {
+  it('/api/maxAmount', (done) => {
+    const bank = { amount: 6000000, currency: 'INR' };
+    supertest(server.listener)
+      .post('/api/maxAmount')
+      .send(bank)
+      .then((response) => {
+        expect(response.statusCode).toBe(200);
+        done();
+      });
+  });
+});
