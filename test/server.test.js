@@ -30,4 +30,3 @@ describe('Server should have the route', () => {
       .catch(console.log);
   });
 });
-
