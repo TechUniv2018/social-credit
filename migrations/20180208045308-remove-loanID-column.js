@@ -1,5 +1,5 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => {
+  up: (queryInterface) => {
     // Remove old attribute
     queryInterface.removeColumn('loans', 'loanID');
   },
