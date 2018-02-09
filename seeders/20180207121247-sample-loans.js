@@ -4,7 +4,7 @@ module.exports = {
   up: queryInterface => queryInterface.bulkInsert('loans', [
     {
       id: 1,
-      userID: 1,
+      userId: 1,
       totalAmount: 10000,
       outstandingAmount: 2000,
       installmentCount: 10,
@@ -13,7 +13,7 @@ module.exports = {
     },
     {
       id: 2,
-      userID: 2,
+      userId: 2,
       totalAmount: 20000,
       outstandingAmount: 4000,
       installmentCount: 10,
@@ -22,7 +22,7 @@ module.exports = {
     },
     {
       id: 3,
-      userID: 3,
+      userId: 3,
       totalAmount: 20000,
       outstandingAmount: 4000,
       installmentCount: 10,
@@ -31,7 +31,7 @@ module.exports = {
     },
     {
       id: 4,
-      userID: 4,
+      userId: 4,
       totalAmount: 10000,
       outstandingAmount: 2000,
       installmentCount: 10,
