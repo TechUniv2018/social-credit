@@ -6,43 +6,37 @@ const supertest = require('supertest');
 expect.extend(matchers);
 
 describe('GET request: Server should have the route', () => {
-  it('/api/maxAmount', (done) => {
+  it('/api/max-amount', (done) => {
     supertest(server.listener)
-      .get('/api/maxAmount')
+      .get('/api/max-amount')
       .then((response) => {
-        expect(response.statusCode).toBe(200);
+        expect(response.body.statusCode).toBe(200);
         done();
       });
   });
   describe('With contents in', () => {
-    it('/api/maxAmount', (done) => {
+    it('/api/max-amount', (done) => {
       supertest(server.listener)
-        .get('/api/maxAmount')
+        .get('/api/max-amount')
         .then((response) => {
           const resultKeys = ['amount', 'currency', 'createdAt', 'updatedAt', 'id'];
-          expect(Object.keys(response.body).sort()).toEqual(resultKeys.sort());
+          expect(Object.keys(response.body.data).sort()).toEqual(resultKeys.sort());
           done();
         });
     });
   });
   describe('With same signature', () => {
-    it('/api/maxAmount', (done) => {
+    it('/api/max-amount', (done) => {
       supertest(server.listener)
-        .get('/api/maxAmount')
+        .get('/api/max-amount')
         .then((response) => {
-          const banks = response.body;
+          const banks = response.body.data;
 
-          const schema = {
-            properties: {
-              id: { type: 'number' },
-              amount: { type: 'number' },
-              currency: { type: 'string' },
-              createdAt: { type: 'string' },
-              updatedAt: { type: 'string' },
-            },
-            required: ['id', 'amount', 'currency', 'createdAt', 'updatedAt'],
-          };
-          expect(banks).toMatchSchema(schema);
+          expect(banks).toMatchObject(expect.objectContaining({
+            id: expect.any(Number),
+            amount: expect.any(Number),
+            currency: expect.any(String),
+          }));
           done();
         });
     });
@@ -51,27 +45,29 @@ describe('GET request: Server should have the route', () => {
 
 
 describe('POST request: Server should have the route', () => {
-  it('/api/maxAmount', (done) => {
+  it('/api/max-amount', (done) => {
     const bank = { amount: 6000000, currency: 'INR' };
     supertest(server.listener)
-      .post('/api/maxAmount')
+      .post('/api/max-amount')
       .send(bank)
       .then((response) => {
-        expect(response.statusCode).toBe(200);
+        expect(response.body.statusCode).toBe(201);
         done();
       });
   });
 });
 
 describe('POST: Check for response', () => {
-  it('api/maxAmount', (done) => {
+  it('api/max-amount', (done) => {
     const bank = { amount: 6000000, currency: 'INR' };
     supertest(server.listener)
-      .post('/api/maxAmount')
+      .post('/api/max-amount')
       .send(bank)
-      .end((err, response) => {
-        if (err) return done(err);
-        expect((response.request.res.text)).toEqual(`Amount set: ${bank.amount}\nCurrency set: ${bank.currency}`);
+      .then((response) => {
+        expect((response.body.data)).toEqual({
+          amount: bank.amount,
+          currency: bank.currency,
+        });
         done();
       });
   });

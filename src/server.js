@@ -8,7 +8,7 @@ const routes = require('./routes');
 // Create a new Hapi server
 const server = new hapi.Server();
 server.connection({
-  port: Number(process.env.PORT || 8089),
+  port: Number(process.env.PORT || 8080),
   host: 'localhost',
 });
 

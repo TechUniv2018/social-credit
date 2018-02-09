@@ -1,42 +1,52 @@
 const model = require('../../../models');
 
-module.exports = [{
-  path: '/api/maxAmount',
-  method: 'GET',
-  handler: (request, response) => {
-    model.banks.findOne().then((bankDetails) => {
-      response(bankDetails);
-    }).catch(() => {
-      response({
-        data: {
-          reason: 'Unable to retrieve users.',
-        },
-        statusCode: 500,
+module.exports = [
+  {
+    path: '/api/max-amount',
+    method: 'GET',
+    handler: (request, response) => {
+      model.banks.findOne().then((bankDetails) => {
+        response({
+          data: bankDetails,
+          statusCode: 200,
+        });
+      }).catch(() => {
+        response({
+          data: {
+            reason: 'Unable to retrieve users.',
+          },
+          statusCode: 500,
+        });
       });
-    });
+    },
   },
-},
-{
-  method: 'POST',
-  path: '/api/maxAmount',
-  handler: (request, reply) => {
-    const amountFromAdmin = request.payload.amount;
-    const currencyFromAdmin = request.payload.currency;
-    model.banks.findOne().then((bankDetails) => {
-      bankDetails.updateAttributes({
-        amount: request.payload.amount,
-        currency: request.payload.currency,
-      });
-      const response = reply(`Amount set: ${amountFromAdmin}\nCurrency set: ${currencyFromAdmin}`);
-      response.header('Content-Type', 'text/plain');
-    }).catch(() => {
-      reply({
-        data: {
-          reason: 'Unable to post',
-        },
-        statusCode: 500,
-      });
-    });
+  {
+    method: 'POST',
+    path: '/api/max-amount',
+    handler: (request, reply) => {
+      const amountFromAdmin = request.payload.amount;
+      const currencyFromAdmin = request.payload.currency;
+      model.banks.findOne()
+        .then(bankDetails => bankDetails.updateAttributes({
+          amount: amountFromAdmin,
+          currency: currencyFromAdmin,
+        }))
+        .then((updatedDetail) => {
+          reply({
+            data: {
+              amount: updatedDetail.amount,
+              currency: updatedDetail.currency,
+            },
+            statusCode: 201,
+          });
+        }).catch((error) => {
+          reply({
+            data: {
+              reason: error.message,
+            },
+            statusCode: 500,
+          });
+        });
+    },
   },
-},
 ];
