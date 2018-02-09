@@ -7,7 +7,7 @@ module.exports = (sequelize, DataTypes) => {
     installmentCount: DataTypes.INTEGER,
   }, {
     classMethods: {
-      associate(models) {
+      associate() {
         // associations can be defined here
       },
     },
