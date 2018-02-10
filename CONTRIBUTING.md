@@ -9,3 +9,7 @@ This is a practice project for mdl-jan interns 2018. External contributors would
 3. All test cases must pass.
 4. Create a pull request. The PR should not have any merge conflicts.
 5. Squash the PR into a single commit. The commit name should be, `Code Review: issue #: your message` where # is issue number.
+
+## Code of Conduct
+
+Check [the code of conduct](code-of-conduct.md) for guidelines on our code of conduct.
