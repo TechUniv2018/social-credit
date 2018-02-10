@@ -13,6 +13,13 @@ module.exports = {
     host: '127.0.0.1',
     dialect: 'postgres',
   },
+  staging: {
+    username: process.env.POSTGRES_USER_NAME,
+    password: process.env.POSTGRES_PASSWORD,
+    database: 'socialscore_staging',
+    host: process.env.POSTGRES_HOST,
+    dialect: 'postgres',
+  },
   production: {
     username: process.env.POSTGRES_USER_NAME,
     password: process.env.POSTGRES_PASSWORD,
