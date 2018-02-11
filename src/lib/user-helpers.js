@@ -1,6 +1,6 @@
 const models = require('../../models');
 
-const userLoans = async userId => new Promise((resolve, reject) => {
+const userLoans = userId => new Promise((resolve, reject) => {
   models.users.findOne({
     where: {
       id: userId,

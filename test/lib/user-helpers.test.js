@@ -1,41 +1,6 @@
 const { userLoans } = require('../../src/lib/user-helpers');
 const models = require('../../models');
 
-beforeEach(done =>
-  models.users.create({
-    firstName: 'Michael',
-    lastName: 'Stevens',
-    facebookId: '1273237828371',
-  })
-    .then((user) => {
-      models.loans.bulkCreate([
-        {
-          userId: user.id,
-          outstandingAmount: 10000,
-          totalAmount: 20000,
-          installmentCount: 10,
-        },
-        {
-          userId: user.id,
-          outstandingAmount: 10000,
-          totalAmount: 20000,
-          installmentCount: 10,
-        },
-      ]);
-    })
-    .then(() => done()));
-afterEach(done =>
-  models.loans.destroy({
-    truncate: true,
-    restartIdentity: true,
-  })
-    .then(() =>
-      models.users.destroy({
-        truncate: true,
-        restartIdentity: true,
-      })
-        .then(() => done())));
-
 describe('userLoans', () => {
   test('should return a Promise', () => {
     expect(userLoans(1))
