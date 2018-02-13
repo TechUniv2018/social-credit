@@ -6,4 +6,18 @@ describe('calculateEmi', () => {
     expect(calculateEmi(1, 1))
       .toBeInstanceOf(Promise);
   });
+  describe('Given a null loanId', () => {
+    test('should return \'Invalid Id\'', (done) => {
+      expect.assertions(1);
+
+      calculateEmi(1, null)
+        .then(() => {
+
+        })
+        .catch((e) => {
+          expect(e.message).toEqual('Invalid Id');
+          done();
+        });
+    });
+  });
 });
