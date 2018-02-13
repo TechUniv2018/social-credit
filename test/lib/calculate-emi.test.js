@@ -20,4 +20,16 @@ describe('calculateEmi', () => {
         });
     });
   });
+  describe('Given invalid userId', () => {
+    test('should return \'Invalid Id\'', (done) => {
+      expect.assertions(1);
+
+      calculateEmi(2, 1)
+        .then(() => {
+        }).catch((e) => {
+          expect(e.message).toEqual('Invalid Id');
+          done();
+        });
+    });
+  });
 });
