@@ -1,5 +1,5 @@
 const { calculateEmi } = require('../../src/lib/calculate-emi');
-// const models = require('../../models');
+const models = require('../../models');
 
 describe('calculateEmi', () => {
   test('should return a Promise', () => {
@@ -28,6 +28,17 @@ describe('calculateEmi', () => {
         .then(() => {
         }).catch((e) => {
           expect(e.message).toEqual('Invalid Id');
+          done();
+        });
+    });
+  });
+  describe('Given valid id', () => {
+    test('should resolve with emi', (done) => {
+      expect.assertions(1);
+
+      calculateEmi(1, 1)
+        .then((emi) => {
+          expect(typeof (emi)).toBe('number');
           done();
         });
     });
