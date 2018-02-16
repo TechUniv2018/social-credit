@@ -1,4 +1,5 @@
 const rp = require('request-promise');
+const facebookUrls = require('../../constants/facebook');
 
 /**
  * This function reads the CLIENT_ID and CLIENT_SECRET environment variables
@@ -9,7 +10,7 @@ const rp = require('request-promise');
 const getAppAccessToken = () => {
   const clientId = process.env.CLIENT_ID;
   const clientSecret = process.env.CLIENT_SECRET;
-  const requestUrl = `https://graph.facebook.com/oauth/access_token?client_id=${clientId}&client_secret=${clientSecret}&grant_type=client_credentials`;
+  const requestUrl = `${facebookUrls.getAccessToken}&client_id=${clientId}&client_secret=${clientSecret}`;
   return rp(requestUrl)
     .then(response => JSON.parse(response).access_token);
 };
