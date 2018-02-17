@@ -1,4 +1,4 @@
-const getAppAccessToken = require('../../src/lib/get-app-access-token');
+const getAppAccessToken = require('../../src/lib/facebook-helpers');
 
 describe('The get app access token helper function should', () => {
   it('return a promise which has the app access token', (done) => {
