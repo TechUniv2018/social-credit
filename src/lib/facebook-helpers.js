@@ -62,6 +62,7 @@ const getFacebookUserData = accessToken => new Promise((resolve, reject) => {
         id: parsedData.id,
         firstName: parsedData.first_name,
         lastName: parsedData.last_name,
+        numberOfFriends: parsedData.friends.summary.total_count,
       });
     })
     .catch(() => {
