@@ -45,7 +45,33 @@ const inspectUserAccessToken = accessToken => new Promise((resolve) => {
     .catch(() => resolve(notValidResult));
 });
 
+/**
+ * This helper function retrieves the facebook user data.
+ * @param {string} accessToken
+ */
+const getFacebookUserData = accessToken => new Promise((resolve, reject) => {
+  const requestUrl = `${facebookUrls.userData}&access_token=${accessToken}`;
+  const error = new Error('Unable to retrieve facebook user data');
+  rp.get(requestUrl)
+    .then((response) => {
+      if (response.error) {
+        reject(error);
+      }
+      const parsedData = JSON.parse(response);
+      resolve({
+        id: parsedData.id,
+        firstName: parsedData.first_name,
+        lastName: parsedData.last_name,
+        numberOfFriends: parsedData.friends.summary.total_count,
+      });
+    })
+    .catch(() => {
+      reject(error);
+    });
+});
+
 module.exports = {
   getAppAccessToken,
   inspectUserAccessToken,
+  getFacebookUserData,
 };

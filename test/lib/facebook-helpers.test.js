@@ -1,4 +1,4 @@
-const { getAppAccessToken, inspectUserAccessToken } = require('../../src/lib/facebook-helpers');
+const { getAppAccessToken, inspectUserAccessToken, getFacebookUserData } = require('../../src/lib/facebook-helpers');
 
 describe('The get app access token helper function should', () => {
   it('return a promise which has the app access token', (done) => {
@@ -26,5 +26,18 @@ describe('inspectUserAccessToken', () => {
           done();
         });
     });
+  });
+});
+
+describe('should return undefined', () => {
+  it('when access token passed is invalid', (done) => {
+    const invalidToken = 'invalidAccessToken';
+
+    getFacebookUserData(invalidToken)
+      .then(() => { })
+      .catch((reason) => {
+        expect(reason).toEqual(new Error('Unable to retrieve facebook user data'));
+        done();
+      });
   });
 });
