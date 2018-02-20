@@ -4,6 +4,10 @@ module.exports = [
   {
     path: '/api/users/{userId}/loans',
     method: 'GET',
+    config: {
+      description: 'Retrieve details for all loans requested by a particular user.',
+      tags: ['api'],
+    },
     handler: (request, response) => {
       const { userId } = request.params;
 
