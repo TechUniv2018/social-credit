@@ -4,6 +4,10 @@ module.exports = [
   {
     path: '/api/max-amount',
     method: 'GET',
+    config: {
+      description: 'Retrieve the bank funds details.',
+      tags: ['api'],
+    },
     handler: (request, response) => {
       model.banks.findOne().then((bankDetails) => {
         response({
@@ -23,6 +27,10 @@ module.exports = [
   {
     method: 'POST',
     path: '/api/max-amount',
+    config: {
+      description: 'Update the bank fund details.',
+      tags: ['api'],
+    },
     handler: (request, reply) => {
       const amountFromAdmin = request.payload.amount;
       const currencyFromAdmin = request.payload.currency;

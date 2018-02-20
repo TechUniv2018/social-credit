@@ -3,6 +3,9 @@
  */
 const hapi = require('hapi');
 const inert = require('inert');
+const vision = require('vision');
+const hapiSwagger = require('hapi-swagger');
+
 const routes = require('./routes');
 
 // Create a new Hapi server
@@ -37,6 +40,14 @@ server.register(inert, (err) => {
     },
   });
 });
+
+/**
+ * Register hapi-swagger
+ */
+server.register([
+  vision,
+  hapiSwagger,
+]);
 
 server.route({
   method: 'GET',
