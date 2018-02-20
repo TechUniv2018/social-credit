@@ -1,8 +1,7 @@
-
 module.exports = (sequelize, DataTypes) => {
-  const bank = sequelize.define('banks', {
-    amount: DataTypes.FLOAT,
-    currency: DataTypes.STRING,
+  const emi = sequelize.define('emi', {
+    loanId: DataTypes.STRING,
+    userId: DataTypes.INTEGER,
   }, {
     classMethods: {
       associate() {
@@ -10,5 +9,5 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
   });
-  return bank;
+  return emi;
 };
