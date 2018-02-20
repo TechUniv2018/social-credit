@@ -28,7 +28,7 @@ module.exports = [
     method: 'POST',
     path: '/api/max-amount',
     config: {
-      description: 'Update the bank fund details',
+      description: 'Update the bank fund details.',
       tags: ['api'],
     },
     handler: (request, reply) => {
