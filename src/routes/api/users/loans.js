@@ -15,7 +15,6 @@ module.exports = [
         .then((loans) => {
           const loansMapped = loans.map(loan => ({
             id: loan.id,
-            installmentCount: loan.installmentCount,
             totalAmount: loan.totalAmount,
             outstandingAmount: loan.outstandingAmount,
             createdAt: loan.createdAt,

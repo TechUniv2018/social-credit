@@ -19,7 +19,6 @@ describe('userLoans', () => {
               userId: expect.any(Number),
               outstandingAmount: expect.any(Number),
               totalAmount: expect.any(Number),
-              installmentCount: expect.any(Number),
               createdAt: expect.any(Date),
               updatedAt: expect.any(Date),
             }));

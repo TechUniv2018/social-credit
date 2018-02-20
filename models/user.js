@@ -2,7 +2,7 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define('users', {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
-    facebookId: DataTypes.STRING,
+    socialScore: DataTypes.INTEGER,
   }, {
     classMethods: {
       associate() {
