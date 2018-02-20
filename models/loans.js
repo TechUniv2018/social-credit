@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
     userId: DataTypes.INTEGER,
     outstandingAmount: DataTypes.FLOAT,
     totalAmount: DataTypes.FLOAT,
-    installmentCount: DataTypes.INTEGER,
+    outstandingInstallments: DataTypes.INTEGER,
+    totalInstallments: DataTypes.INTEGER,
   }, {
     classMethods: {
       associate() {
