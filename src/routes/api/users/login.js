@@ -11,15 +11,14 @@ module.exports = [
       inspectUserAccessToken(accesstoken)
         .then((isUserValid) => {
           if (isUserValid.isValid) {
-            // const facebookId = isUserValid.userId;
             getFacebookUserData(accesstoken)
               .then(userData => model.facebook.findOne({
                 where: {
                   id: userData.id,
                 },
               })
-                .then(([facebookEntry, created]) => {
-                  if (!created) {
+                .then((facebookEntry) => {
+                  if (facebookEntry !== null) {
                     response({
                       success: true,
                       statusCode: 200,
@@ -33,9 +32,10 @@ module.exports = [
                         lastName: userData.lastName,
                         socialScore,
                       },
-                    }).then(() => {
-                      facebookEntry.create({
-                        userId: userData.id,
+                    }).then((user) => {
+                      model.facebook.create({
+                        id: userData.id,
+                        userId: user.id,
                       }).then(() =>
                         response({
                           success: true,
