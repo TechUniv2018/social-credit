@@ -19,6 +19,12 @@ const userLoans = userId => new Promise((resolve, reject) => {
   });
 });
 
+const fetchDataFromUserTable = userId => models.users.findOne({
+  where: {
+    id: userId,
+  },
+});
+
 const addUser = (facebookUser, socialScore) => models.users.create({
   firstName: facebookUser.firstName,
   lastName: facebookUser.lastName,
@@ -28,4 +34,5 @@ const addUser = (facebookUser, socialScore) => models.users.create({
 module.exports = {
   userLoans,
   addUser,
+  fetchDataFromUserTable,
 };
