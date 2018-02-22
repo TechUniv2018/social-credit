@@ -2,7 +2,6 @@ const joi = require('joi');
 
 const {
   inspectUserAccessToken,
-  getFacebookUserData,
   findUserInFacebooksTable,
 } = require('../../../../src/lib/facebook-helpers');
 
@@ -34,20 +33,24 @@ module.exports = [
       inspectUserAccessToken(accesstoken)
         .then((inspectResult) => {
           if (inspectResult.isValid) {
-            return getFacebookUserData(accesstoken) // Get the user data from FB
-              .then(findUserInFacebooksTable) // Find corresponding user id
-              .then(userData => userData.userId) // Extract out FB id
+            return findUserInFacebooksTable({ id: inspectResult.userId }) // Find corresponding userid
+              .then(userData => userData.userId) // Extract out userid
               .then(fetchDataFromUserTable) // Fetch all user data
-              .then(userData => Promise.resolve({
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                socialScore: userData.socialScore,
-                maxLoanAmount: 0, // TODO
+              .then(userData => ({
+                data: {
+                  firstName: userData.firstName,
+                  lastName: userData.lastName,
+                  socialScore: userData.socialScore,
+                  maxLoanAmount: 0, // TODO
+                },
+                statusCode: 200,
               }));
           }
           return Promise.resolve({
             statusCode: 401,
-            message: 'Invalid user access token',
+            data: {
+              message: 'Invalid user access token',
+            },
           });
         })
         .then(response)
