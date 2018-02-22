@@ -46,12 +46,12 @@ module.exports = [
                 statusCode: 200,
               }));
           }
-          return Promise.resolve({
+          return {
             statusCode: 401,
             data: {
               message: 'Invalid user access token',
             },
-          });
+          };
         })
         .then(response)
         .catch(response);
