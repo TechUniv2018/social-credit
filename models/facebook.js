@@ -1,5 +1,5 @@
 module.exports = (sequelize, DataTypes) => {
-  const facebook = sequelize.define('facebook', {
+  const facebook = sequelize.define('facebooks', {
     id: {
       type: DataTypes.STRING(20),
       primaryKey: true,

@@ -19,6 +19,13 @@ const userLoans = userId => new Promise((resolve, reject) => {
   });
 });
 
+const addUser = (facebookUser, socialScore) => models.users.create({
+  firstName: facebookUser.firstName,
+  lastName: facebookUser.lastName,
+  socialScore,
+});
+
 module.exports = {
   userLoans,
+  addUser,
 };
