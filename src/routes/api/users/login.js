@@ -1,18 +1,17 @@
-const { inspectUserAccessToken,
+const {
+  inspectUserAccessToken,
   getFacebookUserData,
   createUserInFacebooksTable,
-  findUserInFacebooksTable }
-  = require('../../../../src/lib/facebook-helpers');
+  findUserInFacebooksTable,
+} = require('../../../../src/lib/facebook-helpers');
 
-const model = require('../../../../models');
-
-const { addUser } = require('../../../../src/lib/user-helpers')
+const { addUser } = require('../../../../src/lib/user-helpers');
 
 const handleNewUser = (facebookUser) => {
   const socialScore = facebookUser.numberOfFriends / 50;
   return addUser(facebookUser, socialScore)
-    .then(createUserInFacebookTable)
-}
+    .then((user) => { createUserInFacebooksTable(facebookUser, user); });
+};
 
 const findOrCreateUser = (facebookEntry, facebookUser) => {
   if (facebookEntry !== null) {
@@ -20,15 +19,14 @@ const findOrCreateUser = (facebookEntry, facebookUser) => {
       success: true,
       statusCode: 200,
     });
-  } else {
-    return handleNewUser(facebookUser)
-      .then(() =>
-        Promise.resolve({
-          success: true,
-          statusCode: 200,
-        }));
   }
-}
+  return handleNewUser(facebookUser)
+    .then(() =>
+      Promise.resolve({
+        success: true,
+        statusCode: 200,
+      }));
+};
 
 module.exports = [
   {
@@ -49,18 +47,15 @@ module.exports = [
                 userData = facebookUser;
                 return findUserInFacebooksTable(facebookUser);
               })
-              .then((facebookEntry) => {
-                return findOrCreateUser(facebookEntry, userData);
-              });
-          } else {
-            return Promise.resolve({
-              success: false,
-              statusCode: 401,
-            });
+              .then(facebookEntry => findOrCreateUser(facebookEntry, userData));
           }
+          return Promise.resolve({
+            success: false,
+            statusCode: 401,
+          });
         })
         .then(response)
-      // .catch(err => response(err));
+        .catch(response);
     },
   },
 ];

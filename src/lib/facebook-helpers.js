@@ -1,6 +1,6 @@
 const rp = require('request-promise');
 const facebookUrls = require('../../constants/facebook');
-const model = require('../../models');
+const models = require('../../models');
 
 /**
  * This function reads the CLIENT_ID and CLIENT_SECRET environment variables
@@ -71,20 +71,18 @@ const getFacebookUserData = accessToken => new Promise((resolve, reject) => {
     });
 });
 
-const createUserInFacebooksTable = (user) => {
-  return model.facebooks.create({
+const createUserInFacebooksTable = (facebookUser, user) =>
+  models.facebooks.create({
     id: facebookUser.id,
     userId: user.id,
   });
-}
 
-const findUserInFacebooksTable = (facebookUser) => {
-  return model.facebooks.findOne({
+const findUserInFacebooksTable = facebookUser =>
+  models.facebooks.findOne({
     where: {
       id: facebookUser.id,
     },
   });
-}
 
 module.exports = {
   getAppAccessToken,
