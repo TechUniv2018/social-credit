@@ -33,7 +33,8 @@ module.exports = [
       inspectUserAccessToken(accesstoken)
         .then((inspectResult) => {
           if (inspectResult.isValid) {
-            return findUserInFacebooksTable({ id: inspectResult.userId }) // Find corresponding userid
+            const user = { id: inspectResult.userId };
+            return findUserInFacebooksTable(user)
               .then(userData => userData.userId) // Extract out userid
               .then(fetchDataFromUserTable) // Fetch all user data
               .then(userData => ({
