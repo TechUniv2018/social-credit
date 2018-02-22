@@ -1,57 +1,66 @@
-const { inspectUserAccessToken, getFacebookUserData } = require('../../../../src/lib/facebook-helpers');
+const { inspectUserAccessToken,
+  getFacebookUserData,
+  createUserInFacebooksTable,
+  findUserInFacebooksTable }
+  = require('../../../../src/lib/facebook-helpers');
+
 const model = require('../../../../models');
 
+const { addUser } = require('../../../../src/lib/user-helpers')
+
+const handleNewUser = (facebookUser) => {
+  const socialScore = facebookUser.numberOfFriends / 50;
+  return addUser(facebookUser, socialScore)
+    .then(createUserInFacebookTable)
+}
+
+const findOrCreateUser = (facebookEntry, facebookUser) => {
+  if (facebookEntry !== null) {
+    return Promise.resolve({
+      success: true,
+      statusCode: 200,
+    });
+  } else {
+    return handleNewUser(facebookUser)
+      .then(() =>
+        Promise.resolve({
+          success: true,
+          statusCode: 200,
+        }));
+  }
+}
 
 module.exports = [
   {
     path: '/api/users/login',
-    method: 'GET',
+    method: 'POST',
+    config: {
+      description: 'Checks if the userId is valid. If valid, api checks if the user has already present in database and sends 200 statusCode. If not, then the api will populate the database and login the user and returns success. If not valid, send 401 statusCode',
+      tags: ['api'],
+    },
     handler: (request, response) => {
       const { accesstoken } = request.headers;
       inspectUserAccessToken(accesstoken)
         .then((isUserValid) => {
           if (isUserValid.isValid) {
-            getFacebookUserData(accesstoken)
-              .then(userData => model.facebook.findOne({
-                where: {
-                  id: userData.id,
-                },
+            let userData;
+            return getFacebookUserData(accesstoken)
+              .then((facebookUser) => {
+                userData = facebookUser;
+                return findUserInFacebooksTable(facebookUser);
               })
-                .then((facebookEntry) => {
-                  if (facebookEntry !== null) {
-                    response({
-                      success: true,
-                      statusCode: 200,
-                    });
-                  } else {
-                    const socialScore = userData.numberOfFriends / 50;
-                    // const maxLoanAmount = socialScore * 100;
-                    model.user.create({
-                      where: {
-                        firstName: userData.firstName,
-                        lastName: userData.lastName,
-                        socialScore,
-                      },
-                    }).then((user) => {
-                      model.facebook.create({
-                        id: userData.id,
-                        userId: user.id,
-                      }).then(() =>
-                        response({
-                          success: true,
-                          statusCode: 201,
-                        }));
-                    });
-                  }
-                }));
+              .then((facebookEntry) => {
+                return findOrCreateUser(facebookEntry, userData);
+              });
           } else {
-            response({
+            return Promise.resolve({
               success: false,
               statusCode: 401,
             });
           }
-        });
+        })
+        .then(response)
+      // .catch(err => response(err));
     },
-
   },
 ];

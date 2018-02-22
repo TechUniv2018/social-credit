@@ -22,7 +22,11 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Program",
-      "program": "${workspaceFolder}/src/server.js"
+      "program": "${workspaceFolder}/src/server.js",
+      "env": {
+        "CLIENT_ID":"183612705722560",
+        "CLIENT_SECRET":"07e0a5be200013944f02a661009bb25f"
+      }
     }
   ]
 }
