@@ -42,7 +42,7 @@ module.exports = [
                   firstName: userData.firstName,
                   lastName: userData.lastName,
                   socialScore: userData.socialScore,
-                  maxLoanAmount: 0, // TODO
+                  // maxLoanAmount: 0, // TODO
                 },
                 statusCode: 200,
               }));
