@@ -1,4 +1,5 @@
 const model = require('../../../models');
+const joi = require('joi');
 
 module.exports = [
   {
@@ -30,22 +31,26 @@ module.exports = [
     config: {
       description: 'Update the bank fund details.',
       tags: ['api'],
+      validate: {
+        payload: {
+          data: joi.object({
+            amount: joi.number().positive().required(),
+            currency: joi.string().required(),
+          }).required(),
+        },
+      },
     },
     handler: (request, reply) => {
-      const amountFromAdmin = request.payload.amount;
-      const currencyFromAdmin = request.payload.currency;
+      const amountFromAdmin = Number(request.payload.data.amount);
+      const currencyFromAdmin = request.payload.data.currency;
       model.banks.findOne()
         .then(bankDetails => bankDetails.updateAttributes({
           amount: amountFromAdmin,
           currency: currencyFromAdmin,
         }))
-        .then((updatedDetail) => {
+        .then(() => {
           reply({
-            data: {
-              amount: updatedDetail.amount,
-              currency: updatedDetail.currency,
-            },
-            statusCode: 201,
+            statusCode: 200,
           });
         }).catch((error) => {
           reply({
