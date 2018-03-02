@@ -6,7 +6,7 @@ const supertest = require('supertest');
 expect.extend(matchers);
 
 describe('GET request: Server should have the route', () => {
-  it('/api/max-amount', (done) => {
+  test('/api/max-amount', (done) => {
     supertest(server.listener)
       .get('/api/max-amount')
       .then((response) => {
@@ -15,7 +15,7 @@ describe('GET request: Server should have the route', () => {
       });
   });
   describe('With contents in', () => {
-    it('/api/max-amount', (done) => {
+    test('/api/max-amount', (done) => {
       supertest(server.listener)
         .get('/api/max-amount')
         .then((response) => {
@@ -26,7 +26,7 @@ describe('GET request: Server should have the route', () => {
     });
   });
   describe('With same signature', () => {
-    it('/api/max-amount', (done) => {
+    test('/api/max-amount', (done) => {
       supertest(server.listener)
         .get('/api/max-amount')
         .then((response) => {
@@ -44,30 +44,14 @@ describe('GET request: Server should have the route', () => {
 });
 
 
-describe('POST request: Server should have the route', () => {
-  it('/api/max-amount', (done) => {
+describe('POST request: Server should return 200 statusCode', () => {
+  test('when amount and currency are valid', (done) => {
     const bank = { amount: 6000000, currency: 'INR' };
     supertest(server.listener)
       .post('/api/max-amount')
       .send(bank)
       .then((response) => {
-        expect(response.body.statusCode).toBe(201);
-        done();
-      });
-  });
-});
-
-describe('POST: Check for response', () => {
-  it('api/max-amount', (done) => {
-    const bank = { amount: 6000000, currency: 'INR' };
-    supertest(server.listener)
-      .post('/api/max-amount')
-      .send(bank)
-      .then((response) => {
-        expect((response.body.data)).toEqual({
-          amount: bank.amount,
-          currency: bank.currency,
-        });
+        expect(response.body.statusCode).toBe(200);
         done();
       });
   });

@@ -18,7 +18,7 @@ module.exports = [
       }).catch(() => {
         response({
           data: {
-            reason: 'Unable to retrieve users.',
+            reason: 'Unable to retrieve bank fund details.',
           },
           statusCode: 500,
         });
@@ -33,16 +33,14 @@ module.exports = [
       tags: ['api'],
       validate: {
         payload: {
-          data: joi.object({
-            amount: joi.number().positive().required(),
-            currency: joi.string().required(),
-          }).required(),
+          amount: joi.number().positive().required(),
+          currency: joi.string().required(),
         },
       },
     },
     handler: (request, reply) => {
-      const amountFromAdmin = Number(request.payload.data.amount);
-      const currencyFromAdmin = request.payload.data.currency;
+      const amountFromAdmin = Number(request.payload.amount);
+      const currencyFromAdmin = request.payload.currency;
       model.banks.findOne()
         .then(bankDetails => bankDetails.updateAttributes({
           amount: amountFromAdmin,
