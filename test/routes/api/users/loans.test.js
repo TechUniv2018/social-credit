@@ -54,7 +54,7 @@ describe('route GET /api/users/loans', () => {
         .then(response =>
           models.loans.count({
             where: {
-              userId: 1,
+              userId: 5,
             },
           })
             .then((count) => {
