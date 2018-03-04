@@ -11,7 +11,10 @@
       "program": "${workspaceFolder}/node_modules/.bin/jest",
       "preLaunchTask": "runmigration",
       "env": {
-        "NODE_ENV": "test"
+        "NODE_ENV": "test",
+        "CLIENT_ID": "183612705722560",
+        "CLIENT_SECRET": "07e0a5be200013944f02a661009bb25f",
+        "ACCESS_TOKEN": "EAACmZCqoZA0MABAK5UJeeg8SLqf0HGYYg1ULNghKVZCqU54nU8rNETgiTZCelZB5MnFBsvP8pexH4HpUEZCOHAZCSiN48QaM6wXY58PxYyFk27joWQ5SZAelnc8ZAeqdodlZCbBak4IlRvFRbUnB49fk0wKf4zRe6L6eEZD"
       },
       "args": [
         "--runInBand"
@@ -23,8 +26,7 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceFolder}/src/server.js",
-      "env": {
-      }
+      "env": {}
     }
   ]
 }
