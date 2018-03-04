@@ -52,4 +52,35 @@ module.exports = [
       })
       .catch(response),
   },
+  {
+    path: '/api/users/loans',
+    method: 'POST',
+    config: {
+      description: 'Request for a loan.',
+      tags: ['api'],
+      validate: {
+        headers: {
+          accesstoken: joi.string().required(),
+        },
+        payload: {
+          totalAmount: joi
+            .number()
+            .min(100000)
+            .max(1000000)
+            .multiple(25000)
+            .required(),
+          totalInstallments: joi
+            .number()
+            .min(12)
+            .max(36)
+            .multiple(6)
+            .required(),
+        },
+        options: {
+          allowUnknown: true,
+        },
+      },
+    },
+    handler: (request, response) => response('ok'),
+  },
 ];
