@@ -2,6 +2,8 @@
  * The index.js file aggregates the routing logic and starts the server
  */
 const hapi = require('hapi');
+const inert = require('inert');
+const vision = require('vision');
 const hapiSwagger = require('hapi-swagger');
 
 const routes = require('./routes');
@@ -24,6 +26,8 @@ server.connection({
  * Register hapi-swagger
  */
 server.register([
+  inert,
+  vision,
   hapiSwagger,
 ]);
 
