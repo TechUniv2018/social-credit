@@ -5,7 +5,7 @@
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "NODE_ENV=test sequelize db:migrate:undo:all && NODE_ENV=test sequelize db:migrate && NODE_ENV=test sequelize db:seed:all && NODE_ENV=test jest --forceExit",
+    "test": "NODE_ENV=test sequelize db:migrate:undo:all && NODE_ENV=test sequelize db:migrate && NODE_ENV=test sequelize db:seed:all && NODE_ENV=test jest --forceExit --runInBand",
     "coverage": "jest --coverage",
     "initdb": "sh scripts/sh/database.sh",
     "migrations": "sequelize db:migrate",
@@ -44,7 +44,6 @@
     "hapi": "^16.6.2",
     "hapi-swagger": "8.0.0",
     "inert": "^4.2.1",
-    "joi": "^9.2.0",
     "pg": "^7.4.1",
     "request-promise": "^4.2.2",
     "sequelize": "^4.32.2",
