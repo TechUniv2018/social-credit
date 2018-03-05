@@ -63,14 +63,12 @@ module.exports = [
           accesstoken: joi.string().required(),
         },
         payload: {
-          totalAmount: joi
-            .number()
+          totalAmount: joi.number()
             .min(100000)
             .max(1000000)
             .multiple(25000)
             .required(),
-          totalInstallments: joi
-            .number()
+          totalInstallments: joi.number()
             .min(12)
             .max(36)
             .multiple(6)
@@ -81,6 +79,63 @@ module.exports = [
         },
       },
     },
-    handler: (request, response) => response('ok'),
+    handler: (request, response) => {
+      const totalAmount = Number(request.payload.totalAmount);
+      const totalInstallments = Number(request.payload.totalInstallments);
+
+      return facebookHelpers
+        .inspectUserAccessToken(request.headers.accesstoken)
+        .then((inspectionResult) => {
+          if (inspectionResult.isValid) {
+            return models.facebooks.findOne({
+              where: {
+                id: inspectionResult.userId,
+              },
+            })
+              .then(facebookUser => Promise.all([facebookUser,
+                models.loans.count({
+                  where: {
+                    userId: facebookUser.userId,
+                    outstandingAmount: {
+                      $gt: 0,
+                    },
+                  },
+                })]))
+              .then(([facebookUser, loansCount]) => {
+                if (loansCount > 0) {
+                  return response({
+                    statusCode: 400,
+                    error: 'Bad request',
+                    message: 'You already have a pending loan.',
+                  });
+                }
+
+                return models.loans.create({
+                  userId: facebookUser.userId,
+                  totalAmount,
+                  totalInstallments,
+                  outstandingAmount: 1.1 * totalAmount,
+                  outstandingInstallments: totalInstallments,
+                })
+                  .then(loan => response({
+                    data: {
+                      totalAmount: loan.totalAmount,
+                      outstandingAmount: loan.outstandingAmount,
+                      outstandingInstallments: loan.outstandingInstallments,
+                      totalInstallments: loan.totalInstallments,
+                    },
+                    statusCode: 201,
+                  }))
+                  .catch(response);
+              });
+          }
+          return response({
+            error: 'Invalid token',
+            message: 'Invalid user access token',
+            statusCode: 400,
+          });
+        })
+        .catch(response);
+    },
   },
 ];
