@@ -71,6 +71,16 @@ describe('route POST /api/users/loans', () => {
   afterEach(() => models.loans.destroy({ where: { userId: 5 } }));
 
   describe('should return 400 statusCode', () => {
+    test('when user access token is invalid', () =>
+      supertest(server.listener)
+        .post('/api/users/loans')
+        .send({})
+        .set('accesstoken', 'invalid-access-token')
+        .then((response) => {
+          expect(response.body.statusCode).toBe(400);
+        })
+        .catch((e) => { throw e; }));
+
     describe('validation tests', () => {
       test('when totalAmount and totalInstallments are not present in payload', () =>
         supertest(server.listener)
