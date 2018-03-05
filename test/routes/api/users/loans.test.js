@@ -249,4 +249,30 @@ describe('route POST /api/users/loans', () => {
         });
     });
   });
+
+  describe('should return loan object with correct values', () => {
+    afterEach(() => models.loans.destroy({
+      where: { userId: 5 },
+    }));
+
+    test('when user applies for a loan', (done) => {
+      const totalAmount = 250000;
+      const totalInstallments = 12;
+
+      const emi = Math.round(((1.1 * totalAmount) / totalInstallments) / 10) * 10;
+
+      supertest(server.listener)
+        .post('/api/users/loans')
+        .send({
+          totalAmount,
+          totalInstallments,
+        })
+        .set('accesstoken', process.env.ACCESS_TOKEN)
+        .then((response) => {
+          expect(response.body.data.outstandingAmount).toBe(Math.round(emi * totalInstallments));
+          expect(response.body.data.outstandingInstallments).toBe(totalInstallments);
+          done();
+        });
+    });
+  });
 });

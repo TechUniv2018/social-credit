@@ -110,11 +110,14 @@ module.exports = [
                   });
                 }
 
+                const emi = Math.round(((1.1 * totalAmount) / totalInstallments) / 10) * 10;
+                const outstandingAmount = emi * totalInstallments;
+
                 return models.loans.create({
                   userId: facebookUser.userId,
                   totalAmount,
                   totalInstallments,
-                  outstandingAmount: 1.1 * totalAmount,
+                  outstandingAmount,
                   outstandingInstallments: totalInstallments,
                 })
                   .then(loan => response({
