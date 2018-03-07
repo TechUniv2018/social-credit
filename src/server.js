@@ -23,44 +23,13 @@ server.connection({
 });
 
 /**
- * Host the public folder statically
- */
-server.register(inert, (err) => {
-  if (err) {
-    throw err;
-  }
-
-  server.route({
-    method: 'GET',
-    path: '/{file*}',
-    handler: {
-      directory: {
-        path: 'public/',
-      },
-    },
-  });
-});
-
-/**
  * Register hapi-swagger
  */
 server.register([
+  inert,
   vision,
   hapiSwagger,
 ]);
-
-server.route({
-  method: 'GET',
-  path: '/admin',
-  handler: (request, response) => {
-    const dummyJson = [
-      { first_name: 'fn1', last_name: 'ln1' },
-      { first_name: 'fn2', last_name: 'ln2' },
-    ];
-    response(JSON.stringify(dummyJson))
-      .header('Content-Type', 'application/json');
-  },
-});
 
 server.route(routes);
 
