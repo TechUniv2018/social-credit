@@ -3,6 +3,7 @@ const joi = require('joi');
 const {
   inspectUserAccessToken,
   findUserInFacebooksTable,
+  getFacebookUserData,
 } = require('../../../../src/lib/facebook-helpers');
 
 const {
@@ -33,19 +34,27 @@ module.exports = [
       inspectUserAccessToken(accesstoken)
         .then((inspectResult) => {
           if (inspectResult.isValid) {
-            const user = { id: inspectResult.userId };
-            return findUserInFacebooksTable(user)
-              .then(userData => userData.userId) // Extract out userid
-              .then(fetchDataFromUserTable) // Fetch all user data
-              .then(userData => ({
-                data: {
-                  firstName: userData.firstName,
-                  lastName: userData.lastName,
-                  socialScore: userData.socialScore,
-                  // maxLoanAmount: 0, // TODO
-                },
-                statusCode: 200,
-              }));
+            return getFacebookUserData(accesstoken)
+              .then((retrievedData) => {
+                const user = { id: inspectResult.userId };
+                return findUserInFacebooksTable(user)
+                  .then(userData => userData.userId) // Extract out userid
+                  .then(fetchDataFromUserTable) // Fetch all user data
+                  .then(userData => ({
+                    data: {
+                      firstName: userData.firstName,
+                      lastName: userData.lastName,
+                      socialScore: userData.socialScore,
+                      // maxLoanAmount: 0, // TODO
+                      socialScoreBreakdown: {
+                        facebook: {
+                          numberOfFbFriends: retrievedData.numberOfFriends,
+                        },
+                      },
+                    },
+                    statusCode: 200,
+                  }));
+              });
           }
           return {
             statusCode: 401,
