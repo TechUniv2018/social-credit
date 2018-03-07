@@ -14,4 +14,18 @@ describe('route GET /api/admin/loans', () => {
         .catch((e) => { throw e; });
     });
   });
+
+  test('should return correct number of users who has taken loans', (done) => {
+    supertest(server.listener)
+      .get('/api/admin/loans')
+      .then((response) => {
+        models.loans.count()
+          .then((count) => {
+            expect(response.body.data.length).toBe(count);
+            done();
+          })
+          .catch((e) => { throw e; })
+          .catch((e) => { throw e; });
+      });
+  });
 });
