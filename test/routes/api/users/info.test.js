@@ -6,7 +6,7 @@ expect.extend(matchers);
 const server = require('../../../../src/server');
 
 describe('/api/users/info', () => {
-  it('when invalid accesstoken is passed', (done) => {
+  it('when invalid accesstoken is passed, login should fail', (done) => {
     supertest(server.listener)
       .get('/api/users/info')
       .set('accesstoken', 'INVALID')
@@ -17,7 +17,7 @@ describe('/api/users/info', () => {
       .catch((e) => { throw e; });
   });
 
-  it('when a valid accesstoke is passed, it should match schema', (done) => {
+  it('when a valid accesstoken is passed, it should match schema', (done) => {
     const schema = {
       properties: {
         firstName: { type: 'string' },
