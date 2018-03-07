@@ -29,7 +29,7 @@ module.exports = {
       updatedAt: new Date(),
     },
     {
-      firstName: 'Shubham',
+      firstName: 'Shachi',
       lastName: 'Mathur',
       socialScore: 100,
       createdAt: new Date(),
