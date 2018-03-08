@@ -14,9 +14,12 @@ const FOLLOWER_COUNT_OF_HIGH_PROFILE_USER = 5000;
  */
 const getFollowersOfFollowers = (screenName, callback) => {
   // Only public data is used to auth is not needed
-  twitterSecret.app_only_auth = true;
+  const twitterSecretCopy = {
+    ...twitterSecret,
+    app_only_auth: true,
+  };
 
-  const T = new Twit(twitterSecret);
+  const T = new Twit(twitterSecretCopy);
   // Queries twitter for basic user info
   T.get('users/show', { screen_name: screenName }, (err1, data) => {
     if (err1) callback(err1);
@@ -50,6 +53,25 @@ const getTwitterScore = (sceenName, callback) => {
   });
 };
 
+const verifyCredentials = (userCredentials, callback) => {
+  // Combine app secret with client secret
+  const twitterSecretCopy = {
+    ...twitterSecret,
+    ...userCredentials,
+  };
+
+  const T = new Twit(twitterSecretCopy);
+
+  return T.get('account/verify_credentials', { skip_status: true })
+    .catch((err) => {
+      callback(err);
+    })
+    .then((result) => {
+      callback(result.data.screen_name);
+    });
+};
+
 module.exports = {
   getTwitterScore,
+  verifyCredentials,
 };
