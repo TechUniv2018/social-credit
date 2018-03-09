@@ -2,6 +2,8 @@ const Twit = require('twit');
 
 const twitterSecret = require('./twitter-config');
 
+const models = require('../../models');
+
 const TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT = 60;
 const FOLLOWER_COUNT_OF_HIGH_PROFILE_USER = 5000;
 
@@ -52,6 +54,12 @@ const getTwitterScore = sceenName =>
       return (res);
     });
 
+/**
+ * Takes user `access_token` and `access_token_secret` and then
+ * verifies them with twitter. Returns twitter screenName or undefined
+ * @param {Object} userCredentials
+ * @returns {Promise}
+ */
 const verifyCredentials = (userCredentials) => {
   // Combine app secret with client secret
   const twitterSecretCopy = {
@@ -66,7 +74,76 @@ const verifyCredentials = (userCredentials) => {
     .catch(err => (err));
 };
 
+/**
+ * Takes a twitter screenName and finds score from db
+ * @param {String} screenName
+ * @returns {Number} score
+ */
+const getScoreFromDb = async (screenName) => {
+  try {
+    const { userId } = await models.twitters.findOne({
+      where: {
+        id: screenName,
+      },
+    });
+    const { socialScore } = await models.users.findOne({
+      where: {
+        id: userId,
+      },
+    });
+    return socialScore;
+  } catch (e) {
+    return null;
+  }
+};
+
+/**
+ * Takes a twitter screenName and score and updates the db
+ * @param {String} screenName
+ * @param {Number} socialScore
+ */
+const saveScoreIntoDb = async (screenName, socialScore) => {
+  const { userId } = await models.twitters.findOne({
+    where: { id: screenName },
+  });
+  await models.users.update(
+    {
+      socialScore,
+    },
+    {
+      where: {
+        id: userId,
+      },
+    },
+  );
+};
+
+/**
+ * Checks if the account exists
+ * @param {String} screenName
+ * @returns {boolean}
+ */
+const doesAccountExist = async (screenName) => {
+  const entry = await models.twitters.findOne({
+    where: { id: screenName },
+  });
+  return entry;
+};
+
+/**
+ * Creates a new entry in twitters table
+ * @param {String} id Twitter screenName
+ * @param {Number} userId
+ */
+const insertEntry = (id, userId) =>
+  models.twitters.upsert({ id, userId })
+    .catch(() => { });
+
 module.exports = {
-  verifyCredentials,
   getTwitterScore,
+  verifyCredentials,
+  getScoreFromDb,
+  saveScoreIntoDb,
+  doesAccountExist,
+  insertEntry,
 };

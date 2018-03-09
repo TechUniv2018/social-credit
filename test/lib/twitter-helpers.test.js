@@ -1,7 +1,62 @@
 const {
   getTwitterScore,
   verifyCredentials,
+  getScoreFromDb,
+  saveScoreIntoDb,
+  doesAccountExist,
+  insertEntry,
 } = require('../../src/lib/twitter-helpers');
+
+const models = require('../../models');
+
+describe('The getScoreFromDb and saveScoreIntoDb functions should', () => {
+  it('read and save scores into db', async () => {
+    const screenName = 'SouradeepNanda';
+    const oldScore = await getScoreFromDb(screenName);
+    const newScore = oldScore + 1;
+    await saveScoreIntoDb('SouradeepNanda', newScore);
+    const fetchedScore = await getScoreFromDb(screenName);
+    expect(fetchedScore).toBe(oldScore + 1);
+  });
+});
+
+describe('The doesAccountExist function should', () => {
+  it('return true if account exists', async () => {
+    const val = await doesAccountExist('SouradeepNanda');
+    expect(val).toBeTruthy();
+  });
+  it('return false if account does not exist', async () => {
+    const val = await doesAccountExist('');
+    expect(val).toBeFalsy();
+  });
+});
+
+describe('The insertEntry function should', () => {
+  it('insert a new entry into the db', async () => {
+    await models.twitters.destroy({ truncate: true });
+    await insertEntry('SouradeepNanda', 3);
+    await insertEntry('SouradeepNanda', 3);
+    const entries = await models.twitters.findAll();
+    expect(entries.length).toBe(1);
+  });
+});
+
+describe('The getSocialScoreFromDb function should', () => {
+  it('return the social score using screenName if it exists', (done) => {
+    getScoreFromDb('SouradeepNanda')
+      .then((score) => {
+        expect(typeof score).toBe('number');
+        done();
+      });
+  });
+  it('return null if screenName does not exist', (done) => {
+    getScoreFromDb('')
+      .then((score) => {
+        expect(score).toBeNull();
+        done();
+      });
+  });
+});
 
 describe('When accesstoken and accesstoken secret is passed', () => {
   it('which is valid, then it should verify credentials', (done) => {
