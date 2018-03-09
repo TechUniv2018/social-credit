@@ -131,7 +131,7 @@ const doesAccountExist = async (screenName) => {
   const entry = await models.twitters.findOne({
     where: { id: screenName },
   });
-  return entry;
+  return entry !== null;
 };
 
 /**
