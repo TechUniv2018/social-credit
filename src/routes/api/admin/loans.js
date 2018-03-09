@@ -15,20 +15,18 @@ module.exports = [
         .then((allLoans) => {
           const loansMapped = allLoans.map(loan =>
             models.users.findOne({ where: { id: loan.userId } })
-              .then(user => models.emi.findAll({ where: { loanId: String(loan.id) } })
+              .then(user => models.emis.findAll({ where: { loanId: loan.id } })
                 .then(emis =>
                   (
                     {
-                      loanId: loan.id,
-                      userId: loan.userId,
-                      userName: `${user.firstName} ${user.lastName}`,
+                      firstName: user.firstName,
+                      lastName: user.lastName,
                       outstandingAmount: loan.outstandingAmount,
                       totalAmount: loan.totalAmount,
                       outstandingInstallments: loan.outstandingInstallments,
                       totalInstallments: loan.totalInstallments,
-                      installmentsPaid: emis.map(emi => ({
-                        id: emi.id,
-                        paymentDate: emi.createdAt,
+                      emis: emis.map(emi => ({
+                        createdAt: emi.createdAt,
                       })),
                     }
                   ))));
