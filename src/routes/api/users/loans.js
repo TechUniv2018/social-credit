@@ -86,6 +86,12 @@ module.exports = [
               where: {
                 id: inspectionResult.userId,
               },
+              include: [
+                {
+                  model: models.users,
+                  as: 'user',
+                },
+              ],
             })
               .then(facebookUser => Promise.all([facebookUser,
                 models.loans.count({
@@ -102,6 +108,16 @@ module.exports = [
                     statusCode: 400,
                     error: 'Bad request',
                     message: 'You already have a pending loan.',
+                  });
+                }
+
+                const maximumEligibleLoanAmount =
+                  Math.floor((facebookUser.user.socialScore * 10000) / 25000) * 25000;
+                if (totalAmount > maximumEligibleLoanAmount) {
+                  return response({
+                    error: 'Bad request',
+                    message: `You are eligible for a maximum loan amount of ${maximumEligibleLoanAmount} INR.`,
+                    statusCode: 400,
                   });
                 }
 
