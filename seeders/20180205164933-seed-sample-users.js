@@ -17,7 +17,7 @@ module.exports = {
     {
       firstName: 'Souradeep',
       lastName: 'Nanda',
-      socialScore: 100,
+      socialScore: 10,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
