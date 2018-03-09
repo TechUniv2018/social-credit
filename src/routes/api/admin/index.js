@@ -1,3 +1,3 @@
-const admin = require('./loans');
+const loans = require('./loans');
 
-module.exports = [].concat(admin);
+module.exports = [].concat(loans);
