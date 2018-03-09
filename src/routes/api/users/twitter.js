@@ -5,6 +5,7 @@ const {
   saveScoreIntoDb,
   doesAccountExist,
   linkTwitter,
+  getTwitterScore,
 } = require('../../../../src/lib/twitter-helpers');
 
 /**
@@ -17,9 +18,8 @@ const {
 const handleNewUser = async (screenName, accesstoken) => {
   await linkTwitter(screenName, accesstoken);
 
-  const twitterScore = 20;// await getTwitterScore(screenName);
+  const twitterScore = await getTwitterScore(screenName);
   const oldScore = await getScoreFromDb(screenName);
-  console.log('scores:', oldScore, twitterScore);
 
   const newScore = (oldScore + twitterScore) / 2;
   await saveScoreIntoDb(screenName, newScore);
@@ -34,12 +34,11 @@ const handleRequest = async (headers) => {
   });
   if (screenName) {
     const userIsAlreadyConnected = await doesAccountExist(screenName);
-    console.log('User exists?', userIsAlreadyConnected);
     if (userIsAlreadyConnected) {
       const score = await getScoreFromDb(screenName);
       return { screenName, score, statusCode: 200 };
     }
-    const score = handleNewUser(screenName, headers.access_token);
+    const score = handleNewUser(screenName, headers.accesstoken);
     return { screenName, score, statusCode: 201 };
   }
   return { statusCode: 401 };
