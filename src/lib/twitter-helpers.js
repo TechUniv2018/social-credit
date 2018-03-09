@@ -46,7 +46,10 @@ const getTwitterScore = (sceenName, callback) => {
   getFollowersOfFollowers(sceenName, (res) => {
     if (typeof res === 'number') {
       const TGAFC = TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT;
-      callback(res / (TGAFC * TGAFC));
+      const relativeScore = res / (TGAFC * TGAFC);
+      const score = (relativeScore * 100) / 2;
+      const clippedScore = Math.min(Math.max(0, score), 100);
+      callback(clippedScore);
     } else {
       callback(res);
     }
