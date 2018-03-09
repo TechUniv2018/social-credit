@@ -5,12 +5,11 @@ module.exports = (sequelize, DataTypes) => {
     totalAmount: DataTypes.FLOAT,
     outstandingInstallments: DataTypes.INTEGER,
     totalInstallments: DataTypes.INTEGER,
-  }, {
-    classMethods: {
-      associate() {
-        // associations can be defined here
-      },
-    },
-  });
+  }, {});
+
+  loans.associate = (models) => {
+    loans.emis = models.loans.hasMany(models.emis, { as: 'emis' });
+  };
+
   return loans;
 };

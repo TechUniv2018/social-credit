@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) => {
-  const emi = sequelize.define('emi', {
-    loanId: DataTypes.STRING,
+  const emi = sequelize.define('emis', {
+    loanId: DataTypes.INTEGER,
     userId: DataTypes.INTEGER,
   }, {
     classMethods: {

@@ -1,7 +1,6 @@
 const joi = require('joi');
 
 const models = require('../../../../models');
-const userLoansHelper = require('../../../../src/lib/user-helpers').userLoans;
 const facebookHelpers = require('../../../lib/facebook-helpers');
 
 module.exports = [
@@ -28,21 +27,18 @@ module.exports = [
             where: {
               id: inspectionResult.userId,
             },
+            include: [
+              {
+                model: models.users,
+                as: 'user',
+              },
+            ],
           })
-            .then(facebookUser => userLoansHelper(facebookUser.userId))
-            .then((loans) => {
-              const loansMapped = loans.map(loan => ({
-                id: loan.id,
-                totalAmount: loan.totalAmount,
-                outstandingAmount: loan.outstandingAmount,
-                createdAt: loan.createdAt,
-              }));
-
-              response({
-                data: loansMapped,
-                statusCode: 200,
-              });
-            });
+            .then(facebookUser => facebookUser.user.loanDetails(models))
+            .then(loans => response({
+              data: loans,
+              statusCode: 200,
+            }));
         }
         return response({
           error: 'Invalid token',

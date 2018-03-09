@@ -1,14 +1,35 @@
 module.exports = (sequelize, DataTypes) => {
-  const User = sequelize.define('users', {
+  const users = sequelize.define('users', {
     firstName: DataTypes.STRING,
     lastName: DataTypes.STRING,
     socialScore: DataTypes.INTEGER,
-  }, {
-    classMethods: {
-      associate() {
-        // associations can be defined here
+  }, {});
+
+  users.prototype.loanDetails = function loanDetails(models) {
+    return models.loans.findAll({
+      attributes: [
+        'outstandingAmount',
+        'totalAmount',
+        'createdAt',
+        'outstandingInstallments',
+        'totalInstallments',
+      ],
+      where: {
+        userId: this.id,
       },
-    },
-  });
-  return User;
+      include: [
+        {
+          model: models.emis,
+          as: 'emis',
+          attributes: ['createdAt'],
+        },
+      ],
+    });
+  };
+
+  users.associate = (models) => {
+    models.users.hasMany(models.loans, { as: 'loans' });
+  };
+
+  return users;
 };
