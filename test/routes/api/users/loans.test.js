@@ -2,7 +2,12 @@ const supertest = require('supertest');
 const models = require('../../../../models');
 const server = require('../../../../src/server');
 
+const userId = 3;
+
 describe('route GET /api/users/loans', () => {
+  beforeAll(async () => {
+    await models.loans.destroy({ truncate: true });
+  });
   describe('should return 200 statusCode', () => {
     test('when access token is valid', (done) => {
       supertest(server.listener)
@@ -54,7 +59,7 @@ describe('route GET /api/users/loans', () => {
         .then(response =>
           models.loans.count({
             where: {
-              userId: 11,
+              userId,
             },
           })
             .then((count) => {
@@ -68,7 +73,7 @@ describe('route GET /api/users/loans', () => {
 });
 
 describe('route POST /api/users/loans', () => {
-  afterEach(() => models.loans.destroy({ where: { userId: 11 } }));
+  afterEach(() => models.loans.destroy({ where: { userId } }));
 
   describe('should return 400 statusCode', () => {
     test('when user access token is invalid', () =>
@@ -193,7 +198,6 @@ describe('route POST /api/users/loans', () => {
     });
 
     describe('when user already has a loan', () => {
-      const userId = 11;
       beforeEach(() => {
         const totalAmount = 250000;
         const totalInstallments = 24;
@@ -232,7 +236,7 @@ describe('route POST /api/users/loans', () => {
   describe('should return 201 statusCode', () => {
     beforeEach(() => models.loans.destroy({
       where: {
-        userId: 11,
+        userId,
       },
     }));
 
@@ -250,7 +254,6 @@ describe('route POST /api/users/loans', () => {
   });
 
   describe('should return valid loan object', () => {
-    const userId = 11;
     beforeEach(() => models.loans.destroy({
       where: { userId },
     }));
@@ -283,7 +286,6 @@ describe('route POST /api/users/loans', () => {
   });
 
   describe('should return loan object with correct values', () => {
-    const userId = 11;
     beforeEach(() => models.loans.destroy({
       where: { userId },
     }));

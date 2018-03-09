@@ -1,9 +1,11 @@
 const { userLoans } = require('../../src/lib/user-helpers');
 const models = require('../../models');
 
+const userId = 3;
+
 describe('userLoans', () => {
   test('should return a Promise', () => {
-    expect(userLoans(1))
+    expect(userLoans(userId))
       .toBeInstanceOf(Promise);
   });
 
@@ -11,7 +13,7 @@ describe('userLoans', () => {
     test('with id, userId, outstandingAmount, totalAmount, installmentCount', (done) => {
       expect.assertions(1);
 
-      userLoans(1)
+      userLoans(userId)
         .then((loans) => {
           if (loans.length > 0) {
             expect(loans[0]).toEqual(expect.objectContaining({
@@ -31,7 +33,6 @@ describe('userLoans', () => {
 
   describe('should resolve with all loans from the correct user', () => {
     test('when valid userId is passed', (done) => {
-      const userId = 1;
       userLoans(userId)
         .then((loans) => {
           loans.forEach((loan) => {
@@ -46,8 +47,6 @@ describe('userLoans', () => {
   describe('should return correct number of loan objects', () => {
     test('when valid userId is passed', (done) => {
       expect.assertions(1);
-
-      const userId = 1;
       userLoans(userId)
         .then(loans =>
           models.loans.count({
