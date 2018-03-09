@@ -1,5 +1,4 @@
 const supertest = require('supertest');
-const models = require('../../../../models');
 const server = require('../../../../src/server');
 
 describe('route POST /api/user/emi', () => {

@@ -1,4 +1,4 @@
-const model = require('../../../../models');
+const models = require('../../../../models');
 const facebookHelpers = require('../../../lib/facebook-helpers');
 const joi = require('joi');
 
@@ -13,6 +13,9 @@ module.exports = [
         headers: {
           accesstoken: joi.string().required(),
         },
+        payload: {
+          amount: joi.number().positive().required(),
+        },
         options: {
           allowUnknown: true,
         },
@@ -22,15 +25,15 @@ module.exports = [
       .inspectUserAccessToken(request.headers.accesstoken)
       .then((inspectionResult) => {
         if (inspectionResult.isValid) {
-          return model.facebooks.find({
+          return models.facebooks.find({
             where: {
               id: inspectionResult.userId,
             },
           })
             .then((facebookUser) => {
               const { userId } = facebookUser;
-              const emiAmount = request.payload.emi;
-              model.loans.findOne({
+              const { amount } = request.payload;
+              models.loans.findOne({
                 where: {
                   userId,
                   outstandingAmount: {
@@ -40,41 +43,35 @@ module.exports = [
               })
                 .then((loanDetails) => {
                   if (loanDetails === null) {
-                    response({
+                    return response({
                       error: 'No pending loans',
                       message: 'You don\'t have any pending loans.',
                       statusCode: 400,
                     });
-                  }
-                  if ((loanDetails.outstandingAmount / loanDetails.outstandingInstallments) === emiAmount) {
-                    return loanDetails.updateAttributes({
-                      outstandingAmount: Number(loanDetails.outstandingAmount) - emiAmount,
-                      outstandingInstallments: Number(loanDetails.outstandingInstallments) - 1,
-                    })
-                      .then(() => model.emi.create({
-                        loanId: loanDetails.id,
-                        userId: loanDetails.userId,
+                  } else if ((loanDetails.outstandingAmount /
+                    loanDetails.outstandingInstallments) === amount) {
+                    return models.sequelize.transaction(transaction =>
+                      loanDetails.updateAttributes({
+                        outstandingAmount: loanDetails.outstandingAmount - amount,
+                        outstandingInstallments: loanDetails.outstandingInstallments - 1,
+                      }, { transaction })
+                        .then(() => models.emis.create({
+                          loanId: loanDetails.id,
+                          userId: loanDetails.userId,
+                        }), { transaction }))
+                      .then(() => response({
+                        statusCode: 201,
+                      }))
+                      .catch(() => response({
+                        statusCode: 500,
+                        error: 'Internal server error',
+                        message: 'Could not pay the emi. Something went wrong.',
                       }));
                   }
                   return response({
                     error: 'Bad request',
-                    message: 'Invalid emi amount',
+                    message: 'Invalid emi amount.',
                     statusCode: 400,
-                  }).done();
-                })
-                .then(() => {
-                  response({
-                    data: {
-                      message: 'success',
-                    },
-                    statusCode: 201,
-                  });
-                }).catch((error) => {
-                  response({
-                    data: {
-                      reason: error.message,
-                    },
-                    statusCode: 500,
                   });
                 });
             });
@@ -85,8 +82,5 @@ module.exports = [
           statusCode: 400,
         });
       }),
-
-
   },
-
 ];

@@ -3,14 +3,20 @@
 module.exports = {
   up: queryInterface => queryInterface.bulkInsert('emis', [
     {
-      loanId: 4,
-      userId: 5,
+      loanId: 2,
+      userId: 2,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
     {
-      loanId: 4,
-      userId: 5,
+      loanId: 2,
+      userId: 2,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
+    {
+      loanId: 3,
+      userId: 3,
       createdAt: new Date(),
       updatedAt: new Date(),
     },
