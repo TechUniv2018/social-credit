@@ -27,15 +27,6 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
-    {
-      userId: 5,
-      totalAmount: 550000,
-      outstandingAmount: 605040,
-      outstandingInstallments: 12,
-      totalInstallments: 12,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
   ]),
 
   down: queryInterface => queryInterface.bulkDelete('loans'),

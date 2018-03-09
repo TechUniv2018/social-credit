@@ -18,6 +18,12 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
     },
+    {
+      id: '1094932527314584',
+      userId: 4,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    },
   ]),
   down: queryInterface => queryInterface.bulkDelete('facebooks'),
 };

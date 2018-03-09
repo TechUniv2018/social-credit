@@ -1,5 +1,4 @@
 const joi = require('joi');
-
 const models = require('../../../../models');
 const facebookHelpers = require('../../../lib/facebook-helpers');
 
