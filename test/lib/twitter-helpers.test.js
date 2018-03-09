@@ -5,6 +5,7 @@ const {
   saveScoreIntoDb,
   doesAccountExist,
   insertEntry,
+  linkTwitter,
 } = require('../../src/lib/twitter-helpers');
 
 const models = require('../../models');
@@ -103,5 +104,17 @@ describe('When a screen_name is passed to getTwitterScore function', () => {
       expect(err.message).toBeDefined();
       done();
     });
+  });
+});
+
+describe('The linkTwitter function should', () => {
+  it('attach a screenName to an userId', async () => {
+    const screenName = 'SouradeepNanda';
+    const expectedUserId = 3;
+    await models.twitters.destroy({ truncate: true });
+    await linkTwitter('SouradeepNanda', process.env.ACCESS_TOKEN);
+    const entries = await models.twitters.findAll();
+    expect(entries[0].id).toBe(screenName);
+    expect(entries[0].userId).toBe(expectedUserId);
   });
 });

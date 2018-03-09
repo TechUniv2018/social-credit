@@ -4,6 +4,10 @@ const twitterSecret = require('./twitter-config');
 
 const models = require('../../models');
 
+const {
+  inspectUserAccessToken,
+} = require('../../src/lib/facebook-helpers');
+
 const TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT = 60;
 const FOLLOWER_COUNT_OF_HIGH_PROFILE_USER = 5000;
 
@@ -139,6 +143,20 @@ const insertEntry = (id, userId) =>
   models.twitters.upsert({ id, userId })
     .catch(() => { });
 
+/**
+ * Takes screenName of twitter and FB accesstoken and creates a new
+ * entry in users
+ * @param {String} screenName
+ * @param {String} accesstoken
+ */
+const linkTwitter = async (screenName, accesstoken) => {
+  const fbResponse = await inspectUserAccessToken(accesstoken);
+  const fbEntry = await models.facebooks.findOne({
+    where: { id: fbResponse.userId },
+  });
+  await insertEntry(screenName, fbEntry.userId);
+};
+
 module.exports = {
   getTwitterScore,
   verifyCredentials,
@@ -146,4 +164,5 @@ module.exports = {
   saveScoreIntoDb,
   doesAccountExist,
   insertEntry,
+  linkTwitter,
 };
