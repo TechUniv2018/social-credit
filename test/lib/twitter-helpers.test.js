@@ -10,7 +10,7 @@ describe('When accesstoken and accesstoken secret is passed', () => {
     verifyCredentials({
       access_token: accessToken,
       access_token_secret: accessTokenSecret,
-    }, (screenName) => {
+    }).then((screenName) => {
       expect(screenName).toBe('SouradeepNanda');
       done();
     });
@@ -21,7 +21,7 @@ describe('When accesstoken and accesstoken secret is passed', () => {
     verifyCredentials({
       access_token: accessToken,
       access_token_secret: accessTokenSecret,
-    }, (res) => {
+    }).then((res) => {
       expect(res).toBeUndefined();
       done();
     });
@@ -30,19 +30,21 @@ describe('When accesstoken and accesstoken secret is passed', () => {
 
 describe('When a screen_name is passed to getTwitterScore function', () => {
   it('of a user with <= 5000 followers', (done) => {
-    getTwitterScore('SouradeepNanda', (score) => {
-      expect(typeof score).toBe('number');
-      done();
-    });
+    getTwitterScore('SouradeepNanda')
+      .then((score) => {
+        expect(typeof score).toBe('number');
+        done();
+      });
   });
   it('of a user with > 5000 followers', (done) => {
-    getTwitterScore('fchollet', (score) => {
-      expect(typeof score).toBe('number');
-      done();
-    });
+    getTwitterScore('fchollet')
+      .then((score) => {
+        expect(typeof score).toBe('number');
+        done();
+      });
   });
   it('of an invalid user', (done) => {
-    getTwitterScore('INVALID_USER_000000', (err) => {
+    getTwitterScore('INVALID_USER_000000').catch((err) => {
       expect(err.message).toBeDefined();
       done();
     });
