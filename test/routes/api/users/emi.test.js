@@ -6,7 +6,7 @@ describe('route POST /api/user/emi', () => {
   describe('should return 200 statusCode', () => {
     test('when user does not have a loan', (done) => {
       supertest(server.listener)
-        .post('/api/user/emi')
+        .post('/api/users/emi')
         .set('accesstoken', process.env.ACCESS_TOKEN)
         .send({
           emi: 2000,

@@ -5,16 +5,13 @@ const joi = require('joi');
 module.exports = [
   {
     method: 'POST',
-    path: '/api/user/emi',
+    path: '/api/users/emi',
     config: {
-      description: 'Pay the EMI by a particular user',
-      tags: ['api'],
+      description: 'Pay a single installment of a loan.',
+      tags: ['api', 'loans'],
       validate: {
         headers: {
           accesstoken: joi.string().required(),
-        },
-        payload: {
-          emi: joi.number().positive().required(),
         },
         options: {
           allowUnknown: true,

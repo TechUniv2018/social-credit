@@ -28,7 +28,16 @@ server.connection({
 server.register([
   inert,
   vision,
-  hapiSwagger,
+  {
+    register: hapiSwagger,
+    options: {
+      info: {
+        title: 'Social Credit API Documentation',
+        version: '0.0.0',
+      },
+      grouping: 'tags',
+    },
+  },
 ]);
 
 server.route(routes);
