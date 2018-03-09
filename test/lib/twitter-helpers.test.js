@@ -13,6 +13,11 @@ const models = require('../../models');
 describe('The getScoreFromDb and saveScoreIntoDb functions should', () => {
   it('read and save scores into db', async () => {
     const screenName = 'SouradeepNanda';
+    await models.twitters.destroy({ truncate: true });
+    await models.twitters.create({
+      id: screenName,
+      userId: 3,
+    });
     const oldScore = await getScoreFromDb(screenName);
     const newScore = oldScore + 1;
     await saveScoreIntoDb('SouradeepNanda', newScore);
@@ -39,23 +44,6 @@ describe('The insertEntry function should', () => {
     await insertEntry('SouradeepNanda', 3);
     const entries = await models.twitters.findAll();
     expect(entries.length).toBe(1);
-  });
-});
-
-describe('The getSocialScoreFromDb function should', () => {
-  it('return the social score using screenName if it exists', (done) => {
-    getScoreFromDb('SouradeepNanda')
-      .then((score) => {
-        expect(typeof score).toBe('number');
-        done();
-      });
-  });
-  it('return null if screenName does not exist', (done) => {
-    getScoreFromDb('')
-      .then((score) => {
-        expect(score).toBeNull();
-        done();
-      });
   });
 });
 
