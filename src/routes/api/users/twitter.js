@@ -24,7 +24,7 @@ const handleNewUser = async (screenName, accesstoken) => {
   const newScore = (oldScore + twitterScore) / 2;
   await saveScoreIntoDb(screenName, newScore);
 
-  return newScore;
+  return Math.round(newScore);
 };
 
 const handleRequest = async (headers) => {
@@ -38,7 +38,8 @@ const handleRequest = async (headers) => {
       const score = await getScoreFromDb(screenName);
       return { screenName, score, statusCode: 200 };
     }
-    const score = handleNewUser(screenName, headers.accesstoken);
+    const score = await handleNewUser(screenName, headers.accesstoken);
+
     return { screenName, score, statusCode: 201 };
   }
   return { statusCode: 401 };
