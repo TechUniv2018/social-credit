@@ -79,7 +79,7 @@ describe('When a screen_name is passed to getTwitterScore function', () => {
         expect(typeof score).toBe('number');
         done();
       });
-  });
+  }, 10000);
   it('of a user with > 5000 followers', (done) => {
     getTwitterScore('fchollet')
       .then((score) => {
