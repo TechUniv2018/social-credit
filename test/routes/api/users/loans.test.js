@@ -87,7 +87,7 @@ describe('route POST /api/users/loans', () => {
         .catch((e) => { throw e; }));
 
     test('when user request for loan more than maximum eligible amount', () =>
-      models.users.findOne({ where: { id: 5 } })
+      models.users.findOne({ where: { id: userId } })
         .then(user => user.updateAttributes({ socialScore: 63 }))
         .then(() => supertest(server.listener)
           .post('/api/users/loans')
@@ -100,7 +100,7 @@ describe('route POST /api/users/loans', () => {
             expect(response.body.statusCode).toBe(400);
             expect(response.body.message).toBe('You are eligible for a maximum loan amount of 625000 INR.');
           }))
-        .then(() => models.users.findOne({ where: { id: 5 } }))
+        .then(() => models.users.findOne({ where: { id: userId } }))
         .then(user => user.updateAttributes({ socialScore: 100 }))
         .catch((e) => { throw e; }));
 
