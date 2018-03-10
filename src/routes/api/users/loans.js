@@ -1,6 +1,7 @@
 const joi = require('joi');
 const models = require('../../../../models');
 const facebookHelpers = require('../../../lib/facebook-helpers');
+const { maximumEligibleAmount } = require('../../../lib/loan-helpers');
 
 module.exports = [
   {
@@ -111,12 +112,11 @@ module.exports = [
                   });
                 }
 
-                const maximumEligibleLoanAmount =
-                  Math.floor((facebookUser.user.socialScore * 10000) / 25000) * 25000;
-                if (totalAmount > maximumEligibleLoanAmount) {
+                const eligibleAmount = maximumEligibleAmount(facebookUser.user.socialScore);
+                if (totalAmount > eligibleAmount) {
                   return response({
                     error: 'Bad request',
-                    message: `You are eligible for a maximum loan amount of ${maximumEligibleLoanAmount} INR.`,
+                    message: `You are eligible for a maximum loan amount of ${eligibleAmount} INR.`,
                     statusCode: 400,
                   });
                 }
