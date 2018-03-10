@@ -10,24 +10,26 @@ describe('userLoans', () => {
   });
 
   describe('should resolve to an array of objects', () => {
-    test('with id, userId, outstandingAmount, totalAmount, installmentCount', (done) => {
+    test('with id, userId, outstandingAmount, totalAmount, installmentCount', async () => {
       expect.assertions(1);
-
-      userLoans(userId)
-        .then((loans) => {
-          if (loans.length > 0) {
-            expect(loans[0]).toEqual(expect.objectContaining({
-              id: expect.any(Number),
-              userId: expect.any(Number),
-              outstandingAmount: expect.any(Number),
-              totalAmount: expect.any(Number),
-              createdAt: expect.any(Date),
-              updatedAt: expect.any(Date),
-            }));
-            done();
-          }
-        })
-        .catch((e) => { throw e; });
+      await models.loans.create({
+        userId,
+        outstandingAmount: 100,
+        totalAmount: 100,
+      });
+      const loans = await userLoans(userId);
+      if (loans.length > 0) {
+        expect(loans[0]).toEqual(expect.objectContaining({
+          id: expect.any(Number),
+          userId: expect.any(Number),
+          outstandingAmount: expect.any(Number),
+          totalAmount: expect.any(Number),
+          createdAt: expect.any(Date),
+          updatedAt: expect.any(Date),
+        }));
+      } else {
+        throw new Error('Could not find loan');
+      }
     });
   });
 
