@@ -18,7 +18,7 @@ const FOLLOWER_COUNT_OF_HIGH_PROFILE_USER = 5000;
  * @param {function} callback Callback function
  * @returns {number} returns the number of followers of followers or error
  */
-const getFollowersOfFollowers = (screenName) => {
+const getFollowersOfFollowers = async (screenName) => {
   // Only public data is used to auth is not needed
   const twitterSecretCopy = {
     ...twitterSecret,
@@ -27,36 +27,34 @@ const getFollowersOfFollowers = (screenName) => {
 
   const T = new Twit(twitterSecretCopy);
   // Queries twitter for basic user info
-  return T.get('users/show', { screen_name: screenName })
-    .then((res) => {
-      const { data } = res;
-      // If the number of followers is greater than 5000 then a single
-      // twitter request would not be sufficient to count the number of followers
-      // Multiple twitter requests might cause the rate to exceed so make an
-      // approximation.
-      if (data.followers_count > FOLLOWER_COUNT_OF_HIGH_PROFILE_USER) {
-        return (data.followers_count * TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT);
-      }
-      return T.get('followers/list', { screen_name: screenName })
-        .then(res2 =>
-          res2.data.users
-            .map(user => user.followers_count)
-            .reduce((acc, score) => acc + score, 0));
-    });
+  const response = await T.get('users/show', { screen_name: screenName });
+  const { data } = response;
+  // If the number of followers is greater than 5000 then a single
+  // twitter request would not be sufficient to count the number of followers
+  // Multiple twitter requests might cause the rate to exceed so make an
+  // approximation.
+  if (data.followers_count > FOLLOWER_COUNT_OF_HIGH_PROFILE_USER) {
+    return (data.followers_count * TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT);
+  }
+  const listResponse = await T.get('followers/list', { screen_name: screenName });
+
+  const total = listResponse.data.users
+    .map(user => user.followers_count)
+    .reduce((acc, score) => acc + score, 0);
+  return total;
 };
 
-const getTwitterScore = sceenName =>
-  getFollowersOfFollowers(sceenName)
-    .then((res) => {
-      if (typeof res === 'number') {
-        const TGAFC = TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT;
-        const relativeScore = res / (TGAFC * TGAFC);
-        const score = (relativeScore * 100) / 2;
-        const clippedScore = Math.min(Math.max(0, score), 100);
-        return (clippedScore);
-      }
-      return (res);
-    });
+const getTwitterScore = async (sceenName) => {
+  const response = await getFollowersOfFollowers(sceenName);
+  if (typeof response === 'number') {
+    const TGAFC = TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT;
+    const relativeScore = response / (TGAFC * TGAFC);
+    const score = (relativeScore * 100) / 2;
+    const clippedScore = Math.min(Math.max(0, score), 100);
+    return clippedScore;
+  }
+  return response;
+};
 
 /**
  * Takes user `access_token` and `access_token_secret` and then
