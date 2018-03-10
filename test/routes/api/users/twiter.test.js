@@ -2,10 +2,6 @@ const supertest = require('supertest');
 const server = require('../../../../src/server');
 const models = require('../../../../models');
 
-// const {
-//   getScoreFromDb,
-// } = require('../../../../src/lib/twitter-helpers');
-
 const clearTwitterTable = async (screenName) => {
   await models.twitters.destroy({
     where: {
@@ -38,5 +34,5 @@ describe('The /api/users/twitter route should', () => {
     const body2 = await callRoute(accessToken, accessTokenSecret);
     expect(body2.statusCode).toBe(200);
     expect(body2.screenName).toBe(screenName);
-  });
+  }, 20000);
 });
