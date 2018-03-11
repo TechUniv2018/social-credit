@@ -23,7 +23,7 @@ describe('/api/users/info', () => {
       },
       {
         where: {
-          id: 5,
+          firstName: 'Shachi',
         },
       },
     );
