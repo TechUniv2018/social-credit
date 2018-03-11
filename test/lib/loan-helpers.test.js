@@ -3,10 +3,11 @@ const { maximumEligibleAmount } = require('../../src/lib/loan-helpers');
 describe('maximumEligibleAmount', () => {
   describe('should return undefined', () => {
     test('when input is more than 100', () => {
-      expect(maximumEligibleAmount(101)).toBe(undefined);
+      expect(maximumEligibleAmount(101))
+        .toBe(maximumEligibleAmount(100));
     });
     test('when input is less than 0', () => {
-      expect(maximumEligibleAmount(-1)).toBe(undefined);
+      expect(maximumEligibleAmount(-1)).toBe(0);
     });
   });
 
