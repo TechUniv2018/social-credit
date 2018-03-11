@@ -7,8 +7,28 @@ const {
 } = require('../../../../src/lib/facebook-helpers');
 
 const {
+  getFollowersOfFollowers,
+} = require('../../../../src/lib/twitter-helpers');
+
+const {
   fetchDataFromUserTable,
 } = require('../../../../src/lib/user-helpers');
+
+const models = require('../../../../models');
+
+const getTwitterFOF = async (userId) => {
+  try {
+    const twitterTableRow = await models.twitters.findOne({ where: { userId } });
+    if (twitterTableRow === null) {
+      throw new Error('Twitter account not connected');
+    }
+    const screenName = twitterTableRow.id;
+    const fof = await getFollowersOfFollowers(screenName);
+    return fof;
+  } catch (e) {
+    return 0;
+  }
+};
 
 const handleRequest = async (accesstoken) => {
   // Ask FB about the validity of the header
@@ -18,12 +38,14 @@ const handleRequest = async (accesstoken) => {
     const user = { id: inspectResult.userId };
     const facebookTableRow = await findUserInFacebooksTable(user);
     const userTableRow = await fetchDataFromUserTable(facebookTableRow.userId);
+    const twitterFOF = await getTwitterFOF(userTableRow.id);
     const data = {
       data: {
         firstName: userTableRow.firstName,
         lastName: userTableRow.lastName,
         socialScore: userTableRow.socialScore,
         fbFriends: fbData.numberOfFriends,
+        twitterFOF,
       },
       statusCode: 200,
     };

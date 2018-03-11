@@ -7,6 +7,7 @@ Object {
     "firstName": "Shachi",
     "lastName": "Mathur",
     "socialScore": 1,
+    "twitterFOF": 0,
   },
   "statusCode": 200,
 }
