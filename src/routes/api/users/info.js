@@ -16,6 +16,8 @@ const {
 
 const models = require('../../../../models');
 
+const { maximumEligibleAmount } = require('../../../lib/loan-helpers');
+
 const getTwitterFOF = async (userId) => {
   try {
     const twitterTableRow = await models.twitters.findOne({ where: { userId } });
@@ -39,6 +41,8 @@ const handleRequest = async (accesstoken) => {
     const facebookTableRow = await findUserInFacebooksTable(user);
     const userTableRow = await fetchDataFromUserTable(facebookTableRow.userId);
     const twitterFOF = await getTwitterFOF(userTableRow.id);
+    const maxAmount = maximumEligibleAmount(userTableRow.socialScore);
+
     const data = {
       data: {
         firstName: userTableRow.firstName,
@@ -46,6 +50,7 @@ const handleRequest = async (accesstoken) => {
         socialScore: userTableRow.socialScore,
         fbFriends: fbData.numberOfFriends,
         twitterFOF,
+        maxAmount,
       },
       statusCode: 200,
     };
