@@ -21,7 +21,7 @@ const handleNewUser = async (screenName, accesstoken) => {
   const twitterScore = await getTwitterScore(screenName);
   const oldScore = await getScoreFromDb(screenName);
 
-  const newScore = (oldScore + twitterScore) / 2;
+  const newScore = Math.min((oldScore + twitterScore), 100);
   await saveScoreIntoDb(screenName, newScore);
 
   return Math.round(newScore);
