@@ -98,7 +98,7 @@ describe('When a screen_name is passed to getTwitterScore function', () => {
 describe('The linkTwitter function should', () => {
   it('attach a screenName to an userId', async () => {
     const screenName = 'SouradeepNanda';
-    const expectedUserId = 3;
+    const expectedUserId = 5;
     await models.twitters.destroy({ truncate: true });
     await linkTwitter('SouradeepNanda', process.env.ACCESS_TOKEN);
     const entries = await models.twitters.findAll();
