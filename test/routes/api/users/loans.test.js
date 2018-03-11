@@ -2,7 +2,7 @@ const supertest = require('supertest');
 const models = require('../../../../models');
 const server = require('../../../../src/server');
 
-const userId = 3;
+const userId = 5;
 
 describe('route GET /api/users/loans', () => {
   beforeAll(async () => {
