@@ -2,7 +2,12 @@ const supertest = require('supertest');
 const models = require('../../../../models');
 const server = require('../../../../src/server');
 
+const userId = 3;
+
 describe('route GET /api/users/loans', () => {
+  beforeAll(async () => {
+    await models.loans.destroy({ truncate: true });
+  });
   describe('should return 200 statusCode', () => {
     test('when access token is valid', (done) => {
       supertest(server.listener)
@@ -54,7 +59,7 @@ describe('route GET /api/users/loans', () => {
         .then(response =>
           models.loans.count({
             where: {
-              userId: 5,
+              userId,
             },
           })
             .then((count) => {
@@ -68,7 +73,7 @@ describe('route GET /api/users/loans', () => {
 });
 
 describe('route POST /api/users/loans', () => {
-  afterEach(() => models.loans.destroy({ where: { userId: 5 } }));
+  afterEach(() => models.loans.destroy({ where: { userId } }));
 
   describe('should return 400 statusCode', () => {
     test('when user access token is invalid', () =>
@@ -82,7 +87,7 @@ describe('route POST /api/users/loans', () => {
         .catch((e) => { throw e; }));
 
     test('when user request for loan more than maximum eligible amount', () =>
-      models.users.findOne({ where: { id: 5 } })
+      models.users.findOne({ where: { id: userId } })
         .then(user => user.updateAttributes({ socialScore: 63 }))
         .then(() => supertest(server.listener)
           .post('/api/users/loans')
@@ -95,7 +100,7 @@ describe('route POST /api/users/loans', () => {
             expect(response.body.statusCode).toBe(400);
             expect(response.body.message).toBe('You are eligible for a maximum loan amount of 625000 INR.');
           }))
-        .then(() => models.users.findOne({ where: { id: 5 } }))
+        .then(() => models.users.findOne({ where: { id: userId } }))
         .then(user => user.updateAttributes({ socialScore: 100 }))
         .catch((e) => { throw e; }));
 
@@ -198,7 +203,7 @@ describe('route POST /api/users/loans', () => {
         const totalInstallments = 24;
 
         return models.loans.create({
-          userId: 5,
+          userId,
           totalAmount,
           totalInstallments,
           outstandingAmount: 1.1 * totalAmount,
@@ -208,7 +213,7 @@ describe('route POST /api/users/loans', () => {
 
       afterEach(() => models.loans.destroy({
         where: {
-          userId: 5,
+          userId,
           totalAmount: 250000,
           totalInstallments: 24,
         },
@@ -229,26 +234,28 @@ describe('route POST /api/users/loans', () => {
   });
 
   describe('should return 201 statusCode', () => {
-    afterEach(() => models.loans.destroy({
-      where: { userId: 5 },
+    beforeEach(() => models.loans.destroy({
+      where: {
+        userId,
+      },
     }));
 
     test('when user applies for a loan', () =>
       supertest(server.listener)
         .post('/api/users/loans')
+        .set('accesstoken', process.env.ACCESS_TOKEN)
         .send({
           totalAmount: 100000,
           totalInstallments: 24,
         })
-        .set('accesstoken', process.env.ACCESS_TOKEN)
         .then((response) => {
           expect(response.body.statusCode).toBe(201);
         }));
   });
 
   describe('should return valid loan object', () => {
-    afterEach(() => models.loans.destroy({
-      where: { userId: 5 },
+    beforeEach(() => models.loans.destroy({
+      where: { userId },
     }));
 
     test('when user applies for a loan', (done) => {
@@ -261,7 +268,7 @@ describe('route POST /api/users/loans', () => {
         .set('accesstoken', process.env.ACCESS_TOKEN)
         .then(response => Promise.all([response, models.loans.findOne({
           where: {
-            userId: 5,
+            userId,
           },
         })]))
         .then(([response, loan]) => {
@@ -279,8 +286,8 @@ describe('route POST /api/users/loans', () => {
   });
 
   describe('should return loan object with correct values', () => {
-    afterEach(() => models.loans.destroy({
-      where: { userId: 5 },
+    beforeEach(() => models.loans.destroy({
+      where: { userId },
     }));
 
     test('when user applies for a loan', (done) => {
