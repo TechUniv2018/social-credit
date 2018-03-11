@@ -1,7 +1,4 @@
 const supertest = require('supertest');
-const { matchers } = require('jest-json-schema');
-
-expect.extend(matchers);
 
 const server = require('../../../../src/server');
 
@@ -18,31 +15,11 @@ describe('/api/users/info', () => {
   });
 
   it('when a valid accesstoken is passed, it should match schema', (done) => {
-    const schema = {
-      properties: {
-        firstName: { type: 'string' },
-        lastName: { type: 'string' },
-        socialScore: { type: 'number' },
-        socialScoreBreakdown: {
-          properties: {
-            facebook: {
-              properties: {
-                numberOfFbFriends: { type: 'number' },
-              },
-              required: ['numberOfFbFriends'],
-            },
-          },
-          required: ['facebook'],
-        },
-      },
-      required: ['firstName', 'lastName', 'socialScore', 'socialScoreBreakdown'],
-    };
     supertest(server.listener)
       .get('/api/users/info')
       .set('accesstoken', process.env.ACCESS_TOKEN)
       .then((response) => {
-        expect(response.body.statusCode).toBe(200);
-        expect(response.body.data).toMatchSchema(schema);
+        expect(response.body).toMatchSnapshot();
         done();
       })
       .catch((e) => { throw e; });

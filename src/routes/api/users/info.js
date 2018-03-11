@@ -10,6 +10,33 @@ const {
   fetchDataFromUserTable,
 } = require('../../../../src/lib/user-helpers');
 
+const handleRequest = async (accesstoken) => {
+  // Ask FB about the validity of the header
+  const inspectResult = await inspectUserAccessToken(accesstoken);
+  if (inspectResult.isValid) {
+    const fbData = await getFacebookUserData(accesstoken);
+    const user = { id: inspectResult.userId };
+    const facebookTableRow = await findUserInFacebooksTable(user);
+    const userTableRow = await fetchDataFromUserTable(facebookTableRow.userId);
+    const data = {
+      data: {
+        firstName: userTableRow.firstName,
+        lastName: userTableRow.lastName,
+        socialScore: userTableRow.socialScore,
+        fbFriends: fbData.numberOfFriends,
+      },
+      statusCode: 200,
+    };
+    return data;
+  }
+  return {
+    statusCode: 401,
+    data: {
+      message: 'Invalid user access token',
+    },
+  };
+};
+
 module.exports = [
   {
     path: '/api/users/info',
@@ -29,40 +56,7 @@ module.exports = [
     handler: (request, response) => {
       // Get FB accesstoken from headers
       const { accesstoken } = request.headers;
-
-      // Ask FB about the validity of the header
-      inspectUserAccessToken(accesstoken)
-        .then((inspectResult) => {
-          if (inspectResult.isValid) {
-            return getFacebookUserData(accesstoken)
-              .then((retrievedData) => {
-                const user = { id: inspectResult.userId };
-                return findUserInFacebooksTable(user)
-                  .then(userData => userData.userId) // Extract out userid
-                  .then(fetchDataFromUserTable) // Fetch all user data
-                  .then(userData => ({
-                    data: {
-                      firstName: userData.firstName,
-                      lastName: userData.lastName,
-                      socialScore: userData.socialScore,
-                      // maxLoanAmount: 0, // TODO
-                      socialScoreBreakdown: {
-                        facebook: {
-                          numberOfFbFriends: retrievedData.numberOfFriends,
-                        },
-                      },
-                    },
-                    statusCode: 200,
-                  }));
-              });
-          }
-          return {
-            statusCode: 401,
-            data: {
-              message: 'Invalid user access token',
-            },
-          };
-        })
+      handleRequest(accesstoken)
         .then(response)
         .catch(response);
     },
