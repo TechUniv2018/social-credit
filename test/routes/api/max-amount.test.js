@@ -1,9 +1,5 @@
-const { matchers } = require('jest-json-schema');
-
 const server = require('../../../src/server');
 const supertest = require('supertest');
-
-expect.extend(matchers);
 
 describe('GET request: Server should have the route', () => {
   test('/api/max-amount', (done) => {

@@ -3,11 +3,61 @@ const joi = require('joi');
 const {
   inspectUserAccessToken,
   findUserInFacebooksTable,
+  getFacebookUserData,
 } = require('../../../../src/lib/facebook-helpers');
+
+const {
+  getFollowersOfFollowers,
+} = require('../../../../src/lib/twitter-helpers');
 
 const {
   fetchDataFromUserTable,
 } = require('../../../../src/lib/user-helpers');
+
+const models = require('../../../../models');
+
+const getTwitterFOF = async (userId) => {
+  try {
+    const twitterTableRow = await models.twitters.findOne({ where: { userId } });
+    if (twitterTableRow === null) {
+      throw new Error('Twitter account not connected');
+    }
+    const screenName = twitterTableRow.id;
+    const fof = await getFollowersOfFollowers(screenName);
+    return fof;
+  } catch (e) {
+    return 0;
+  }
+};
+
+const handleRequest = async (accesstoken) => {
+  // Ask FB about the validity of the header
+  const inspectResult = await inspectUserAccessToken(accesstoken);
+  if (inspectResult.isValid) {
+    const fbData = await getFacebookUserData(accesstoken);
+    const user = { id: inspectResult.userId };
+    const facebookTableRow = await findUserInFacebooksTable(user);
+    const userTableRow = await fetchDataFromUserTable(facebookTableRow.userId);
+    const twitterFOF = await getTwitterFOF(userTableRow.id);
+    const data = {
+      data: {
+        firstName: userTableRow.firstName,
+        lastName: userTableRow.lastName,
+        socialScore: userTableRow.socialScore,
+        fbFriends: fbData.numberOfFriends,
+        twitterFOF,
+      },
+      statusCode: 200,
+    };
+    return data;
+  }
+  return {
+    statusCode: 401,
+    data: {
+      message: 'Invalid user access token',
+    },
+  };
+};
 
 module.exports = [
   {
@@ -28,32 +78,7 @@ module.exports = [
     handler: (request, response) => {
       // Get FB accesstoken from headers
       const { accesstoken } = request.headers;
-
-      // Ask FB about the validity of the header
-      inspectUserAccessToken(accesstoken)
-        .then((inspectResult) => {
-          if (inspectResult.isValid) {
-            const user = { id: inspectResult.userId };
-            return findUserInFacebooksTable(user)
-              .then(userData => userData.userId) // Extract out userid
-              .then(fetchDataFromUserTable) // Fetch all user data
-              .then(userData => ({
-                data: {
-                  firstName: userData.firstName,
-                  lastName: userData.lastName,
-                  socialScore: userData.socialScore,
-                  // maxLoanAmount: 0, // TODO
-                },
-                statusCode: 200,
-              }));
-          }
-          return {
-            statusCode: 401,
-            data: {
-              message: 'Invalid user access token',
-            },
-          };
-        })
+      handleRequest(accesstoken)
         .then(response)
         .catch(response);
     },

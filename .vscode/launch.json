@@ -11,7 +11,7 @@
       "program": "${workspaceFolder}/node_modules/.bin/jest",
       "preLaunchTask": "runmigration",
       "env": {
-        "NODE_ENV": "test"
+        "NODE_ENV": "test",
       },
       "args": [
         "--runInBand"
@@ -23,8 +23,7 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceFolder}/src/server.js",
-      "env": {
-      }
+      "env": {}
     }
   ]
 }

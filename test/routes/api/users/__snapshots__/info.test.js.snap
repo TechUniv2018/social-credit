@@ -1,0 +1,14 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`/api/users/info when a valid accesstoken is passed, it should match schema 1`] = `
+Object {
+  "data": Object {
+    "fbFriends": 27,
+    "firstName": "Shachi",
+    "lastName": "Mathur",
+    "socialScore": 1,
+    "twitterFOF": 0,
+  },
+  "statusCode": 200,
+}
+`;
