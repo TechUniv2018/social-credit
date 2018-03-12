@@ -78,7 +78,7 @@ module.exports = [
         },
       },
       description: 'Checks user token and sends user information. Fails with 401 if token is invalid.',
-      tags: ['api'],
+      tags: ['api', 'users'],
     },
     handler: (request, response) => {
       // Get FB accesstoken from headers

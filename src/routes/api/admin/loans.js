@@ -8,7 +8,7 @@ module.exports = [
     method: 'GET',
     config: {
       description: 'Retrieve details for all loans of all the users.',
-      tags: ['api'],
+      tags: ['api', 'admin'],
     },
     handler: (request, response) =>
       models.loans.findAll({ order: [['outstandingAmount', 'DESC']] })

@@ -7,7 +7,6 @@ module.exports = [
     method: 'GET',
     config: {
       description: 'Retrieve the bank funds details.',
-      tags: ['api'],
     },
     handler: (request, response) => {
       model.banks.findOne().then((bankDetails) => {
@@ -30,7 +29,6 @@ module.exports = [
     path: '/api/max-amount',
     config: {
       description: 'Update the bank fund details.',
-      tags: ['api'],
       validate: {
         payload: {
           amount: joi.number().positive().required(),

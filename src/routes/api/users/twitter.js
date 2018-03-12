@@ -51,7 +51,7 @@ module.exports = [
     method: 'POST',
     config: {
       description: 'Checks if the access token is valid and calculates twitter score',
-      tags: ['api'],
+      tags: ['api', 'users'],
       validate: {
         headers: {
           accesstoken: joi.string().required(),
