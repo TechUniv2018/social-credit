@@ -36,7 +36,7 @@ module.exports = [
     method: 'POST',
     config: {
       description: 'Checks if the userId is valid. If valid, api checks if the user has already present in database and sends 200 statusCode. If not, then the api will populate the database and login the user and returns success. If not valid, send 401 statusCode',
-      tags: ['api'],
+      tags: ['api', 'users'],
       validate: {
         headers: {
           accesstoken: joi.string().required(),

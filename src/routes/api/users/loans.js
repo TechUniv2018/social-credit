@@ -9,7 +9,7 @@ module.exports = [
     method: 'GET',
     config: {
       description: 'Retrieve details for all loans requested by a particular user.',
-      tags: ['api'],
+      tags: ['api', 'loans'],
       validate: {
         headers: {
           accesstoken: joi.string().required(),
@@ -53,7 +53,7 @@ module.exports = [
     method: 'POST',
     config: {
       description: 'Request for a loan.',
-      tags: ['api'],
+      tags: ['api', 'loans'],
       validate: {
         headers: {
           accesstoken: joi.string().required(),
