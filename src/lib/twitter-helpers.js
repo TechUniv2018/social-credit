@@ -11,6 +11,17 @@ const {
 const TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT = 60;
 const FOLLOWER_COUNT_OF_HIGH_PROFILE_USER = 5000;
 
+const getFollowersList = async (screenName) => {
+  const twitterSecretCopy = {
+    ...twitterSecret,
+    app_only_auth: true,
+  };
+  const T = new Twit(twitterSecretCopy);
+  const listResponse = await T.get('followers/list', { screen_name: screenName });
+  // console.dir(listResponse);
+  return listResponse.data.users;
+};
+
 /**
  * Takes a twitter screen_name and returns the number of followers of
  * followers. Makes an estimate if number of followers is greater than 5000.
@@ -174,4 +185,5 @@ module.exports = {
   insertEntry,
   linkTwitter,
   getFollowersOfFollowers,
+  getFollowersList,
 };
