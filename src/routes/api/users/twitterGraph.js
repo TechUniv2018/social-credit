@@ -1,7 +1,8 @@
-const { getFollowersList } = require('../../../lib/twitter-helpers');
+const { getFollowersList, showData } = require('../../../lib/twitter-helpers');
 
 const handleRequest = async (screenName) => {
   const followersList = await getFollowersList(screenName);
+  const userData = await showData(screenName);
   const data = followersList.map(follower => ({
     name: follower.name,
     photo: follower.profile_image_url,
@@ -18,8 +19,8 @@ const handleRequest = async (screenName) => {
     weight: Math.floor(Math.max(node.followerCount, 1)),
   }));
   nodes.unshift({
-    name: screenName,
-    photo: '',
+    name: userData.name,
+    photo: userData.profile_image_url,
     group: 0,
   });
   return {
