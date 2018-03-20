@@ -60,7 +60,7 @@ module.exports = [
         },
         payload: {
           totalAmount: joi.number()
-            .min(100000)
+            .min(25000)
             .max(1000000)
             .multiple(25000)
             .required(),

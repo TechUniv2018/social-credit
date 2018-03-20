@@ -76,14 +76,14 @@ describe('When a screen_name is passed to getTwitterScore function', () => {
   it('of a user with <= 5000 followers', (done) => {
     getTwitterScore('SouradeepNanda')
       .then((score) => {
-        expect(typeof score).toBe('number');
+        expect(typeof score.impact).toBe('number');
         done();
       });
   }, 10000);
   it('of a user with > 5000 followers', (done) => {
     getTwitterScore('fchollet')
       .then((score) => {
-        expect(typeof score).toBe('number');
+        expect(typeof score.impact).toBe('number');
         done();
       });
   });

@@ -116,11 +116,11 @@ describe('route POST /api/users/loans', () => {
           .catch((e) => { throw e; }));
 
       describe('totalAmount', () => {
-        test('when totalAmount is less than 100000', () =>
+        test('when totalAmount is less than 25000', () =>
           supertest(server.listener)
             .post('/api/users/loans')
             .send({
-              totalAmount: 75000,
+              totalAmount: 20000,
               totalInstallments: 12,
             })
             .set('accesstoken', process.env.ACCESS_TOKEN)

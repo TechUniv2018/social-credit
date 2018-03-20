@@ -3,12 +3,22 @@
 exports[`/api/users/info when a valid accesstoken is passed, it should match schema 1`] = `
 Object {
   "data": Object {
-    "fbFriends": 27,
+    "breakDown": Object {
+      "facebook": Object {
+        "friendsCount": 27,
+        "impact": 5,
+      },
+      "twitter": Object {
+        "followersCount": 0,
+        "impact": 0,
+        "isVerified": false,
+        "secondFollowersCount": 0,
+      },
+    },
     "firstName": "Shachi",
     "lastName": "Mathur",
     "maxAmount": 500000,
     "socialScore": 50,
-    "twitterFOF": 0,
   },
   "statusCode": 200,
 }

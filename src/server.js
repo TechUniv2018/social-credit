@@ -2,6 +2,7 @@
  * The index.js file aggregates the routing logic and starts the server
  */
 const hapi = require('hapi');
+const bell = require('bell');
 const inert = require('inert');
 const vision = require('vision');
 const hapiSwagger = require('hapi-swagger');
@@ -26,6 +27,7 @@ server.connection({
  * Register hapi-swagger
  */
 server.register([
+  bell,
   inert,
   vision,
   {
@@ -39,6 +41,16 @@ server.register([
     },
   },
 ]);
+
+const twitterConstants = require('./lib/twitter-config');
+
+server.auth.strategy('twitter', 'bell', {
+  provider: 'twitter',
+  password: '1234567890qwertyuiopzxcvbnmasdfghjkl', // TODO: Use env variable in production
+  clientId: twitterConstants.consumer_key,
+  clientSecret: twitterConstants.consumer_secret,
+  isSecure: false,
+});
 
 server.route(routes);
 

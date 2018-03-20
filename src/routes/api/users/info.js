@@ -7,7 +7,7 @@ const {
 } = require('../../../../src/lib/facebook-helpers');
 
 const {
-  getFollowersOfFollowers,
+  getTwitterScore,
 } = require('../../../../src/lib/twitter-helpers');
 
 const {
@@ -18,18 +18,21 @@ const models = require('../../../../models');
 
 const { maximumEligibleAmount } = require('../../../lib/loan-helpers');
 
-const getTwitterFOF = async (userId) => {
-  try {
-    const twitterTableRow = await models.twitters.findOne({ where: { userId } });
-    if (twitterTableRow === null) {
-      throw new Error('Twitter account not connected');
-    }
-    const screenName = twitterTableRow.id;
-    const fof = await getFollowersOfFollowers(screenName);
-    return fof;
-  } catch (e) {
-    return 0;
+const getTwitterData = async (userId) => {
+  const twitterTableRow = await models.twitters.findOne({ where: { userId } });
+  if (twitterTableRow === null) {
+    return {
+      total: 0,
+      verified: false,
+      secondFollowersCount: 0,
+      followersCount: 0,
+      impact: 0,
+      followers: [],
+    };
   }
+  const screenName = twitterTableRow.id;
+  const fof = await getTwitterScore(screenName);
+  return fof;
 };
 
 const handleRequest = async (accesstoken) => {
@@ -40,16 +43,25 @@ const handleRequest = async (accesstoken) => {
     const user = { id: inspectResult.userId };
     const facebookTableRow = await findUserInFacebooksTable(user);
     const userTableRow = await fetchDataFromUserTable(facebookTableRow.userId);
-    const twitterFOF = await getTwitterFOF(userTableRow.id);
+    const twitterData = await getTwitterData(userTableRow.id);
     const maxAmount = maximumEligibleAmount(userTableRow.socialScore);
-
     const data = {
       data: {
         firstName: userTableRow.firstName,
         lastName: userTableRow.lastName,
         socialScore: userTableRow.socialScore,
-        fbFriends: fbData.numberOfFriends,
-        twitterFOF,
+        breakDown: {
+          facebook: {
+            friendsCount: fbData.numberOfFriends,
+            impact: Math.floor(Math.min(fbData.numberOfFriends / 5, 400)),
+          },
+          twitter: {
+            isVerified: false,
+            secondFollowersCount: twitterData.total,
+            followersCount: twitterData.followers.length,
+            impact: twitterData.impact,
+          },
+        },
         maxAmount,
       },
       statusCode: 200,
