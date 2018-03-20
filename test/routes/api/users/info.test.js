@@ -31,7 +31,7 @@ describe('/api/users/info', () => {
       .get('/api/users/info')
       .set('accesstoken', process.env.ACCESS_TOKEN)
       .then((response) => {
-        expect(response.body.statusCode).toBe(200);
+        expect(response.body).toMatchSnapshot();
       })
       .catch((e) => { throw e; });
   });
