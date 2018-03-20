@@ -39,6 +39,7 @@
     "supertest": "^3.0.0"
   },
   "dependencies": {
+    "bell": "^8.8.0",
     "hapi": "^16.6.2",
     "hapi-swagger": "8.0.0",
     "inert": "^4.2.1",

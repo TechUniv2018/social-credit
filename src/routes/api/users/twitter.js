@@ -18,7 +18,7 @@ const {
 const handleNewUser = async (screenName, accesstoken) => {
   await linkTwitter(screenName, accesstoken);
 
-  const twitterScore = await getTwitterScore(screenName);
+  const twitterScore = (await getTwitterScore(screenName)).impact;
   const oldScore = await getScoreFromDb(screenName);
 
   const newScore = Math.min((oldScore + twitterScore), 100);

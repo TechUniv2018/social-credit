@@ -36,24 +36,34 @@ const getFollowersOfFollowers = async (screenName) => {
   if (data.followers_count > FOLLOWER_COUNT_OF_HIGH_PROFILE_USER) {
     return (data.followers_count * TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT);
   }
-  const listResponse = await T.get('followers/list', { screen_name: screenName });
+  const listResponse = await T.get('followers/list', {
+    screen_name: screenName,
+    count: 200,
+  });
 
   const total = listResponse.data.users
     .map(user => user.followers_count)
     .reduce((acc, score) => acc + score, 0);
-  return total;
+
+  return {
+    screenName,
+    total,
+    verified: data.verified,
+    followers: listResponse.data.users,
+  };
 };
 
 const getTwitterScore = async (sceenName) => {
   const response = await getFollowersOfFollowers(sceenName);
-  if (typeof response === 'number') {
-    const TGAFC = TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT;
-    const relativeScore = response / (TGAFC * TGAFC);
-    const score = (relativeScore * 100) / 2;
-    const clippedScore = Math.min(Math.max(0, score), 100);
-    return clippedScore;
-  }
-  return response;
+  const { total } = response;
+  const TGAFC = TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT;
+  const relativeScore = total / (TGAFC * TGAFC);
+  const score = (relativeScore * 100) / 2;
+  const clippedScore = Math.min(Math.max(0, score), 100);
+  return {
+    ...response,
+    impact: clippedScore,
+  };
 };
 
 /**

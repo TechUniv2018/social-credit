@@ -12,5 +12,20 @@ module.exports = (sequelize, DataTypes) => {
       },
     },
   });
+
+  twitters.newTwitter = async (userId, id) => {
+    const twitterRow = await twitters.findOne({
+      where: { userId },
+    });
+
+    if (twitterRow === null) {
+      return twitters.create({
+        userId,
+        id,
+      });
+    }
+    return twitterRow;
+  };
+
   return twitters;
 };
