@@ -27,6 +27,7 @@ describe('/api/users/info', () => {
         },
       },
     );
+    await models.twitters.destroy({ truncate: true });
     await supertest(server.listener)
       .get('/api/users/info')
       .set('accesstoken', process.env.ACCESS_TOKEN)
