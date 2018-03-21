@@ -18,8 +18,8 @@ Object {
     },
     "firstName": "Shachi",
     "lastName": "Mathur",
-    "maxAmount": 50000,
-    "socialScore": 5,
+    "maxAmount": 500000,
+    "socialScore": 50,
   },
   "statusCode": 200,
 }
