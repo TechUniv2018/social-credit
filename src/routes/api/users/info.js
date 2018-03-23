@@ -46,8 +46,8 @@ const handleRequest = async (accesstoken) => {
     const twitterData = await getTwitterData(userTableRow.id);
 
     // Round social score and update it
-    const facebookImpact = parseInt(Math.min(fbData.numberOfFriends / 5, 500), 10);
-    const twitterImpact = parseInt(Math.min(twitterData.impact, 500), 10);
+    const facebookImpact = parseInt(Math.min(fbData.numberOfFriends / 5, 450), 10);
+    const twitterImpact = twitterData.impact;
 
     const newSocialScore = facebookImpact + twitterImpact;
     await models.users.update(
