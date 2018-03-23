@@ -44,22 +44,35 @@ const handleRequest = async (accesstoken) => {
     const facebookTableRow = await findUserInFacebooksTable(user);
     const userTableRow = await fetchDataFromUserTable(facebookTableRow.userId);
     const twitterData = await getTwitterData(userTableRow.id);
-    const maxAmount = maximumEligibleAmount(userTableRow.socialScore);
+
+    // Round social score and update it
+    const facebookImpact = parseInt(Math.min(fbData.numberOfFriends / 5, 450), 10);
+    const twitterImpact = twitterData.impact;
+
+    const newSocialScore = facebookImpact + twitterImpact;
+    await models.users.update(
+      { socialScore: newSocialScore },
+      { where: { id: userTableRow.id } },
+    );
+
+    // Calculate new max amount
+    const maxAmount = maximumEligibleAmount(newSocialScore);
+
     const data = {
       data: {
         firstName: userTableRow.firstName,
         lastName: userTableRow.lastName,
-        socialScore: userTableRow.socialScore,
+        socialScore: newSocialScore,
         breakDown: {
           facebook: {
             friendsCount: fbData.numberOfFriends,
-            impact: Math.floor(Math.min(fbData.numberOfFriends / 5, 400)),
+            impact: facebookImpact,
           },
           twitter: {
             isVerified: false,
             secondFollowersCount: twitterData.total,
             followersCount: twitterData.followers.length,
-            impact: twitterData.impact,
+            impact: twitterImpact,
           },
         },
         maxAmount,

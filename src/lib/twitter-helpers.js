@@ -58,8 +58,8 @@ const getTwitterScore = async (sceenName) => {
   const { total } = response;
   const TGAFC = TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT;
   const relativeScore = total / (TGAFC * TGAFC);
-  const score = (relativeScore * 100) / 2;
-  const clippedScore = Math.min(Math.max(0, score), 100);
+  const score = (relativeScore * 1000) / 2;
+  const clippedScore = parseInt(Math.min(Math.max(0, score), 450), 10);
   return {
     ...response,
     impact: clippedScore,
