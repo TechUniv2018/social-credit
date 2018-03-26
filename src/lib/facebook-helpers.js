@@ -84,10 +84,17 @@ const findUserInFacebooksTable = facebookUser =>
     },
   });
 
+const userProfile = async (id) => {
+  const requestUrl = `https://graph.facebook.com/${id}?fields=id,first_name,last_name,friends&access_token=${process.env.CLIENT_ID}|${process.env.CLIENT_SECRET}`;
+  const jsonString = await rp.get(requestUrl);
+  return JSON.parse(jsonString);
+};
+
 module.exports = {
-  getAppAccessToken,
-  inspectUserAccessToken,
-  getFacebookUserData,
   createUserInFacebooksTable,
   findUserInFacebooksTable,
+  getAppAccessToken,
+  getFacebookUserData,
+  inspectUserAccessToken,
+  userProfile,
 };

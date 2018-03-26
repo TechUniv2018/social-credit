@@ -1,34 +1,9 @@
 const joi = require('joi');
 
-const {
-  inspectUserAccessToken,
-  getFacebookUserData,
-  createUserInFacebooksTable,
-  findUserInFacebooksTable,
-} = require('../../../../src/lib/facebook-helpers');
+const models = require('../../../../models');
+const authHelpers = require('../../../lib/auth-helpers');
 
-const { addUser } = require('../../../../src/lib/user-helpers');
-
-const handleNewUser = (facebookUser) => {
-  const socialScore = facebookUser.numberOfFriends / 50;
-  return addUser(facebookUser, socialScore)
-    .then((user) => { createUserInFacebooksTable(facebookUser, user); });
-};
-
-const findOrCreateUser = (facebookEntry, facebookUser) => {
-  if (facebookEntry !== null) {
-    return Promise.resolve({
-      success: true,
-      statusCode: 200,
-    });
-  }
-  return handleNewUser(facebookUser)
-    .then(() =>
-      Promise.resolve({
-        success: true,
-        statusCode: 200,
-      }));
-};
+const signUpClient = authHelpers.auth0generator(process.env.AUTH0_CLIENT_ID);
 
 module.exports = [
   {
@@ -39,33 +14,60 @@ module.exports = [
       tags: ['api', 'users'],
       validate: {
         headers: {
-          accesstoken: joi.string().required(),
+          access_token: joi.string().required(),
         },
         options: {
           allowUnknown: true,
         },
       },
     },
-    handler: (request, response) => {
-      const { accesstoken } = request.headers;
-      inspectUserAccessToken(accesstoken)
-        .then((isUserValid) => {
-          if (isUserValid.isValid) {
-            let userData;
-            return getFacebookUserData(accesstoken)
-              .then((facebookUser) => {
-                userData = facebookUser;
-                return findUserInFacebooksTable(facebookUser);
-              })
-              .then(facebookEntry => findOrCreateUser(facebookEntry, userData));
-          }
-          return Promise.resolve({
-            success: false,
-            statusCode: 401,
+    handler: async (request, response) => {
+      try {
+        const accesstoken = request.headers.access_token;
+
+        const data = await authHelpers.inspectAccessToken(signUpClient, accesstoken);
+        const [providerName, providerId] = data.sub.split('|');
+        const providerTable = `${providerName}s`;
+
+        const socialUserData = await models[providerTable].findOne({
+          where: { id: providerId },
+          include: [
+            {
+              model: models.users,
+              as: 'user',
+            },
+          ],
+        });
+        let userId = socialUserData ? socialUserData.user.id : undefined;
+
+        if (!socialUserData) {
+          // New signup
+          const user = await models.users.create({
+            firstName: data.given_name,
+            lastName: data.family_name,
+            socialScore: 0,
           });
-        })
-        .then(response)
-        .catch(response);
+
+          // Create the row for the provider
+          await models[providerTable].create({
+            id: providerId,
+            userId: user.id,
+          });
+
+          userId = user.id;
+        }
+
+        response({
+          statusCode: 200,
+          apiToken: authHelpers.signJwtToken(userId),
+        });
+      } catch (error) {
+        response({
+          statusCode: 500,
+          error: 'Internal Server Error',
+          message: 'Something went wrong...',
+        });
+      }
     },
   },
 ];

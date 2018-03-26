@@ -6,6 +6,7 @@ const bell = require('bell');
 const inert = require('inert');
 const vision = require('vision');
 const hapiSwagger = require('hapi-swagger');
+const hapiAuthJwt2 = require('hapi-auth-jwt2');
 
 const routes = require('./routes');
 
@@ -28,6 +29,7 @@ server.connection({
  */
 server.register([
   bell,
+  hapiAuthJwt2,
   inert,
   vision,
   {
@@ -40,9 +42,20 @@ server.register([
       grouping: 'tags',
     },
   },
+
 ]);
 
 const twitterConstants = require('./lib/twitter-config');
+
+server.auth.strategy(
+  'jwt',
+  'jwt',
+  {
+    key: '1234567890okjnbvcdrtyujhvcxdse4567ujhfrty', // Never Share your secret key
+    validateFunc: () => ({ isValid: true }), // validate function defined above
+    verifyOptions: { algorithms: ['HS256'] }, // pick a strong algorithm
+  },
+);
 
 server.auth.strategy('twitter', 'bell', {
   provider: 'twitter',
@@ -50,6 +63,15 @@ server.auth.strategy('twitter', 'bell', {
   clientId: twitterConstants.consumer_key,
   clientSecret: twitterConstants.consumer_secret,
   isSecure: false,
+});
+
+server.auth.strategy('facebook', 'bell', {
+  provider: 'facebook',
+  password: 'cookie_encryption_password_secure',
+  isSecure: false,
+  clientId: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
+  // location: server.info.uri,
 });
 
 server.route(routes);

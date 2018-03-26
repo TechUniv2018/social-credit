@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
 
   facebooks.associate = (models) => {
-    models.facebooks.belongsTo(models.users, { as: 'user' });
+    models.facebooks.belongsTo(models.users);
   };
 
   return facebooks;

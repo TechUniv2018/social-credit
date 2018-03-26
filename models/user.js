@@ -29,7 +29,10 @@ module.exports = (sequelize, DataTypes) => {
 
   users.associate = (models) => {
     models.users.hasMany(models.loans, { as: 'loans' });
+    models.users.hasOne(models.facebooks);
+    models.users.hasOne(models.twitters);
   };
 
+  users.newUser = user => users.create(user);
   return users;
 };

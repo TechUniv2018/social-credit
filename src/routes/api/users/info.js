@@ -1,18 +1,11 @@
 const joi = require('joi');
 
-const {
-  inspectUserAccessToken,
-  findUserInFacebooksTable,
-  getFacebookUserData,
-} = require('../../../../src/lib/facebook-helpers');
+const facebookHelpers = require('../../../../src/lib/facebook-helpers');
+const authHelpers = require('../../../lib/auth-helpers');
 
 const {
   getTwitterScore,
 } = require('../../../../src/lib/twitter-helpers');
-
-const {
-  fetchDataFromUserTable,
-} = require('../../../../src/lib/user-helpers');
 
 const models = require('../../../../models');
 
@@ -37,23 +30,29 @@ const getTwitterData = async (userId) => {
 
 const handleRequest = async (accesstoken) => {
   // Ask FB about the validity of the header
-  const inspectResult = await inspectUserAccessToken(accesstoken);
-  if (inspectResult.isValid) {
-    const fbData = await getFacebookUserData(accesstoken);
-    const user = { id: inspectResult.userId };
-    const facebookTableRow = await findUserInFacebooksTable(user);
-    const userTableRow = await fetchDataFromUserTable(facebookTableRow.userId);
-    const twitterData = await getTwitterData(userTableRow.id);
+  const inspectResult = await authHelpers.decodeJwtToken(accesstoken);
+  if (inspectResult.userId) {
+    // Load user and all providers
+    const user = await models.users.findOne({
+      where: { id: inspectResult.userId },
+      include: [
+        {
+          model: models.facebooks,
+          as: 'facebook',
+        },
+      ],
+    });
+
+    const fbData = await facebookHelpers.userProfile(user.facebook.id);
+
+    const twitterData = await getTwitterData(user.id);
 
     // Round social score and update it
-    const facebookImpact = parseInt(Math.min(fbData.numberOfFriends / 5, 450), 10);
+    const facebookImpact = parseInt(Math.min(fbData.friends.summary.total_count / 5, 450), 10);
     const twitterImpact = twitterData.impact;
 
     const newSocialScore = facebookImpact + twitterImpact;
-    await models.users.update(
-      { socialScore: newSocialScore },
-      { where: { id: userTableRow.id } },
-    );
+    await user.updateAttributes({ socialScore: newSocialScore });
 
     // Calculate new max amount
     const maxAmount = maximumEligibleAmount(newSocialScore);
@@ -61,12 +60,12 @@ const handleRequest = async (accesstoken) => {
 
     const data = {
       data: {
-        firstName: userTableRow.firstName,
-        lastName: userTableRow.lastName,
+        firstName: user.firstName,
+        lastName: user.lastName,
         socialScore: newSocialScore,
         breakDown: {
           facebook: {
-            friendsCount: fbData.numberOfFriends,
+            friendsCount: fbData.friends.summary.total_count,
             impact: facebookImpact,
           },
           twitter: {
@@ -98,7 +97,7 @@ module.exports = [
     config: {
       validate: {
         headers: {
-          accesstoken: joi.string().required(),
+          access_token: joi.string().required(),
         },
         options: {
           allowUnknown: true,
@@ -109,8 +108,8 @@ module.exports = [
     },
     handler: (request, response) => {
       // Get FB accesstoken from headers
-      const { accesstoken } = request.headers;
-      handleRequest(accesstoken)
+      const accessToken = request.headers.access_token;
+      handleRequest(accessToken)
         .then(response)
         .catch(response);
     },
