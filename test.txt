@@ -1,0 +1,16 @@
+
+> social-credit@0.0.0 start /Users/sauravsahu/Project/ssl/backend
+> node src/server.js
+
+Server running at: http://0.0.0.0:8080
+{ sub: 'facebook|1848904528493107',
+  given_name: 'Saurav',
+  family_name: 'Sahu',
+  nickname: 'Saurav Sahu',
+  name: 'Saurav Sahu',
+  picture: 'https://scontent.xx.fbcdn.net/v/t1.0-1/p50x50/27331761_1777646248952269_4091303268960064617_n.jpg?_nc_cat=0&oh=4020ddd09acb3d35582a8d283ecf80f2&oe=5B4413B0',
+  gender: 'male',
+  locale: 'en-US',
+  updated_at: '2018-03-25T08:11:00.335Z',
+  email_verified: true }
+undefined

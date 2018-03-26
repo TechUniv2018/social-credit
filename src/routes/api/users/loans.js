@@ -1,5 +1,8 @@
 const joi = require('joi');
+
 const models = require('../../../../models');
+
+const authHelpers = require('../../../lib/auth-helpers');
 const facebookHelpers = require('../../../lib/facebook-helpers');
 const { maximumEligibleAmount } = require('../../../lib/loan-helpers');
 
@@ -12,41 +15,30 @@ module.exports = [
       tags: ['api', 'loans'],
       validate: {
         headers: {
-          accesstoken: joi.string().required(),
+          access_token: joi.string().required(),
         },
         options: {
           allowUnknown: true,
         },
       },
     },
-    handler: (request, response) => facebookHelpers
-      .inspectUserAccessToken(request.headers.accesstoken)
-      .then((inspectionResult) => {
-        if (inspectionResult.isValid) {
-          return models.facebooks.find({
-            where: {
-              id: inspectionResult.userId,
-            },
-            include: [
-              {
-                model: models.users,
-                as: 'user',
-              },
-            ],
-          })
-            .then(facebookUser => facebookUser.user.loanDetails(models))
-            .then(loans => response({
-              data: loans,
-              statusCode: 200,
-            }));
-        }
-        return response({
-          error: 'Invalid token',
-          message: 'Invalid user access token',
-          statusCode: 400,
-        });
-      })
-      .catch(response),
+    handler: (request, response) => {
+      const inspectionResult = authHelpers.decodeJwtToken(request.headers.access_token);
+
+      if (inspectionResult.userId) {
+        return models.users.findById(inspectionResult.userId)
+          .then(user => user.loanDetails(models))
+          .then(loans => response({
+            data: loans,
+            statusCode: 200,
+          }));
+      }
+      return response({
+        error: 'Invalid token',
+        message: 'Invalid user access token',
+        statusCode: 400,
+      });
+    },
   },
   {
     path: '/api/users/loans',

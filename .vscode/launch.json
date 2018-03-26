@@ -23,7 +23,10 @@
       "request": "launch",
       "name": "Launch Program",
       "program": "${workspaceFolder}/src/server.js",
-      "env": {}
+      "env": {
+        "AUTH0_CLIENT_ID": "TF5Sv1SO5dFnKd7OMb7bTykdiWzovGeS",
+        "JWT_PASSWORD": "4AA6AD02090989CB7BFA85841A0A895B"
+      }
     }
   ]
 }

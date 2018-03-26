@@ -31,8 +31,14 @@ const addUser = (facebookUser, socialScore) => models.users.create({
   socialScore,
 });
 
+const createSocialEntry = (social, id, userId) => models[social].findOrCreate({
+  where: { id },
+  defaults: { userId },
+});
+
 module.exports = {
-  userLoans,
   addUser,
+  createSocialEntry,
+  userLoans,
   fetchDataFromUserTable,
 };

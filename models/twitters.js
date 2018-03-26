@@ -13,6 +13,10 @@ module.exports = (sequelize, DataTypes) => {
     },
   });
 
+  twitters.associate = (models) => {
+    models.twitters.belongsTo(models.users);
+  };
+
   twitters.newTwitter = async (userId, id) => {
     const twitterRow = await twitters.findOne({
       where: { userId },
