@@ -12,6 +12,7 @@ Object {
         "followersCount": 0,
         "impact": 0,
         "isVerified": false,
+        "screenName": "",
         "secondFollowersCount": 0,
       },
     },
