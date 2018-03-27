@@ -56,7 +56,7 @@ const handleRequest = async (accesstoken) => {
 
     // Calculate new max amount
     const maxAmount = maximumEligibleAmount(newSocialScore);
-    const twitterTableRow = await models.twitters.findOne({ where: { userId: userTableRow.id } });
+    const twitterTableRow = await models.twitters.findOne({ where: { userId: user.id } });
 
     const data = {
       data: {
