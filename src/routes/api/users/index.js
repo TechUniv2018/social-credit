@@ -4,6 +4,7 @@ const info = require('./info');
 const emi = require('./emi');
 const twitter = require('./twitter');
 const twitterGraph = require('./twitterGraph');
+const connect = require('./connect');
 
 module.exports = [].concat(
   loans,
@@ -12,4 +13,5 @@ module.exports = [].concat(
   emi,
   twitter,
   twitterGraph,
+  connect,
 );

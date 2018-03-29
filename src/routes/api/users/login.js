@@ -3,7 +3,7 @@ const joi = require('joi');
 const models = require('../../../../models');
 const authHelpers = require('../../../lib/auth-helpers');
 
-const signUpClient = authHelpers.auth0generator(process.env.AUTH0_CLIENT_ID);
+const { signUpAuth } = authHelpers;
 
 module.exports = [
   {
@@ -25,7 +25,7 @@ module.exports = [
       try {
         const accesstoken = request.headers.access_token;
 
-        const data = await authHelpers.inspectAccessToken(signUpClient, accesstoken);
+        const data = await authHelpers.inspectAccessToken(signUpAuth, accesstoken);
         const [providerName, providerId] = data.sub.split('|');
         const providerTable = `${providerName}s`;
 

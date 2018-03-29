@@ -17,7 +17,7 @@ const showData = async (screenName) => {
     app_only_auth: true,
   };
   const T = new Twit(twitterSecretCopy);
-  const response = await T.get('users/show', { screen_name: screenName });
+  const response = await T.get('users/show', { user_id: screenName });
   return response.data;
 };
 
@@ -27,7 +27,7 @@ const getFollowersList = async (screenName) => {
     app_only_auth: true,
   };
   const T = new Twit(twitterSecretCopy);
-  const listResponse = await T.get('followers/list', { screen_name: screenName });
+  const listResponse = await T.get('followers/list', { user_id: screenName });
   // console.dir(listResponse);
   return listResponse.data.users;
 };
@@ -48,7 +48,7 @@ const getFollowersOfFollowers = async (screenName) => {
 
   const T = new Twit(twitterSecretCopy);
   // Queries twitter for basic user info
-  const response = await T.get('users/show', { screen_name: screenName });
+  const response = await T.get('users/show', { user_id: screenName });
   const { data } = response;
   // If the number of followers is greater than 5000 then a single
   // twitter request would not be sufficient to count the number of followers
@@ -58,7 +58,7 @@ const getFollowersOfFollowers = async (screenName) => {
     return (data.followers_count * TWITTER_GLOBAL_AVERAGE_FOLLOWER_COUNT);
   }
   const listResponse = await T.get('followers/list', {
-    screen_name: screenName,
+    user_id: screenName,
     count: 200,
   });
 

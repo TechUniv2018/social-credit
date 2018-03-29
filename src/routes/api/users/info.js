@@ -30,7 +30,7 @@ const getTwitterData = async (userId) => {
 
 const handleRequest = async (accesstoken) => {
   // Ask FB about the validity of the header
-  const inspectResult = await authHelpers.decodeJwtToken(accesstoken);
+  const inspectResult = authHelpers.decodeJwtToken(accesstoken);
   if (inspectResult.userId) {
     // Load user and all providers
     const user = await models.users.findOne({
