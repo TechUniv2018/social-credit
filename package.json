@@ -47,7 +47,7 @@
     "inert": "^4.2.1",
     "joi": "^9.2.0",
     "jsonwebtoken": "^8.2.0",
-    "pg": "^7.4.1",
+    "pg": "6",
     "request-promise": "^4.2.2",
     "sequelize": "^4.32.2",
     "twit": "^2.2.9",
