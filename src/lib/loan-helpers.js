@@ -8,7 +8,7 @@ const maximumEligibleAmount = (socialScore) => {
     return 0;
   }
   const score = Math.min(Math.max(socialScore, 0), 1000);
-  return Math.floor((score * 10000) / 25000) * 25000;
+  return Math.floor((score * 1000) / 2500) * 2500;
 };
 
 module.exports = {
